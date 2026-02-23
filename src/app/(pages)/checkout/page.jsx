@@ -179,7 +179,7 @@ export default function CheckoutPage() {
                         {/* 1. Delivery Address */}
                         <section className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
                             <div className="flex items-center gap-4 mb-8">
-                                <div className="w-10 h-10 rounded-xl bg-brand/20 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
                                     <FaMapMarkerAlt className="text-brand" size={18} />
                                 </div>
                                 <h2 className="text-xl font-bold">Delivery Address</h2>
@@ -188,12 +188,12 @@ export default function CheckoutPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <InputField label="Full name" name="full_name" placeholder="John Doe" options={{ required: "Name is required" }} />
                                 <InputField label="Email" name="email" placeholder="Email Address" options={{ required: "Email is required" }} />
-                                <InputField label="Phone Number" name="phone" placeholder="+92 300 1234567" options={{ required: "Phone is required" }} />
+                                <InputField label="Phone Number" name="phone" placeholder="+44 7700 900000" options={{ required: "Phone is required" }} />
                                 <div className="md:col-span-2">
                                     <InputField label="Street Address" name="street_address" placeholder="123 Food Street, Block A" options={{ required: "Address is required" }} />
                                 </div>
-                                <InputField label="City" name="city" placeholder="Lahore" options={{ required: "City is required" }} />
-                                <InputField label="Postal Code" name="postal_code" placeholder="54000" />
+                                <InputField label="City" name="city" placeholder="London" options={{ required: "City is required" }} />
+                                <InputField label="Postal Code" name="postal_code" placeholder="SW1A 0AA" />
 
                                 <div className="md:col-span-2 space-y-4">
                                     <div className="flex justify-between items-end">
@@ -255,7 +255,7 @@ export default function CheckoutPage() {
                         {/* 2. Payment Method */}
                         <section className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
                             <div className="flex items-center gap-4 mb-8">
-                                <div className="w-10 h-10 rounded-xl bg-brand/20 flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center">
                                     <FaCreditCard className="text-brand" size={18} />
                                 </div>
                                 <h2 className="text-xl font-bold">Payment Method</h2>
@@ -364,7 +364,7 @@ export default function CheckoutPage() {
                     <aside className="lg:col-span-4 lg:sticky lg:top-8">
                         <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-3xl p-2 sm:p-3 shadow-2xl">
                             <h2 className="text-xl font-bold mb-8 flex items-center gap-3">
-                                <FaShoppingBag className="text-brand/60" size={18} />
+                                <FaShoppingBag className="text-white" size={18} />
                                 Order Summary
                             </h2>
 

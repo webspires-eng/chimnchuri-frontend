@@ -23,7 +23,7 @@ export default function MenuSection() {
                 <Link href="/categories" className="hover:scale-125 hover:text-brand transition-all duration-500">
                     Order
                 </Link>
-                <Link href="/" className="hover:scale-125 hover:text-brand transition-all duration-500">
+                <Link href="/team" className="hover:scale-125 hover:text-brand transition-all duration-500">
                     Team
                 </Link>
             </div>
