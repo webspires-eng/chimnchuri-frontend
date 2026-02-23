@@ -120,3 +120,14 @@ export const resetPasswordApi = (data) => apiClient("/reset-password", {
 
 // OFFER
 export const fetchOffer = () => apiClient("/offer");
+
+// CONTACT
+export const sendContactEmailApi = (data) => apiClient("/contact", {
+    method: "POST",
+    body: JSON.stringify(data)
+});
+
+// TEAM
+export const fetchTeamApi = () => apiClient("/teams");
+
+

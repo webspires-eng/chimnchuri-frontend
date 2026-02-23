@@ -17,7 +17,8 @@ const HomeFooter = () => {
                         <Link href="/" className="text-white hover:text-brand transition-all duration-500">Home</Link>
                         <Link href="/categories" className="text-white hover:text-brand transition-all duration-500">Menu</Link>
                         <Link href="/categories" className="text-white hover:text-brand transition-all duration-500">Our Food</Link>
-                        <a href="#" className="text-white hover:text-brand transition-all duration-500">Team</a>
+                        <Link href="/contact" className="text-white hover:text-brand transition-all duration-500">Contact</Link>
+                        <Link href="/team" className="text-white hover:text-brand transition-all duration-500">Team</Link>
                     </div>
 
                     <ul className="flex items-center justify-center flex-wrap gap-5 mt-5">

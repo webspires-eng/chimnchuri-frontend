@@ -1,42 +1,48 @@
 'use client';
 
+import { useSettings } from '@/app/providers/SettingsProvider';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaPaperPlane, FaFacebookF, FaInstagram, FaTwitter, FaWhatsapp } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { sendContactEmailApi } from '@/lib/api';
 
 const ContactContent = () => {
+
+    const setting = useSettings();
     const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
 
     const onSubmit = async (data) => {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log(data);
-        toast.success("Message sent successfully! We'll get back to you soon.");
-        reset();
+        try {
+            await sendContactEmailApi(data);
+            toast.success("Your message has been sent successfully!");
+            reset();
+        } catch (error) {
+            toast.error(error.message || "Failed to send message. Please try again later.");
+        }
     };
 
     const contactInfo = [
         {
             icon: <FaPhoneAlt />,
             label: "Phone",
-            value: "+1 (555) 000-0000",
-            subValue: "Mon-Sun, 10am-11pm",
-            link: "tel:+15550000000"
+            value: setting?.phone,
+            subValue: "",
+            link: `tel:${setting?.phone}`
         },
         {
             icon: <FaEnvelope />,
             label: "Email",
-            value: "hello@chimnchurri.com",
-            subValue: "Online Support 24/7",
-            link: "mailto:hello@chimnchurri.com"
+            value: setting?.email,
+            subValue: "",
+            link: `mailto:${setting?.email}`
         },
         {
             icon: <FaMapMarkerAlt />,
             label: "Location",
-            value: "123 Flavor Street",
-            subValue: "City Center, FL 33101",
-            link: "https://maps.google.com"
+            value: `${setting?.address}, ${setting?.city}, ${setting?.state} ${setting?.postcode}`,
+            subValue: "",
+            link: `https://maps.google.com/?q=${setting?.address}`
         }
     ];
 
@@ -83,7 +89,7 @@ const ContactContent = () => {
                             ))}
                         </div>
 
-                        <div className="space-y-6 pt-4">
+                        {/* <div className="space-y-6 pt-4">
                             <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Follow Our Journey</p>
                             <div className="flex gap-4">
                                 {[
@@ -97,7 +103,7 @@ const ContactContent = () => {
                                     </a>
                                 ))}
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Right Column: Form */}
@@ -110,12 +116,12 @@ const ContactContent = () => {
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Full Name</label>
                                         <input
-                                            {...register("name", { required: "Name is required" })}
+                                            {...register("full_name", { required: "Name is required" })}
                                             type="text"
                                             placeholder="John Doe"
-                                            className={`w-full bg-white/[0.05] border ${errors.name ? 'border-red-500/50' : 'border-white/10'} focus:border-brand rounded-xl p-4 outline-none text-white text-sm transition-all backdrop-blur-sm`}
+                                            className={`w-full bg-white/[0.05] border ${errors.full_name ? 'border-red-500/50' : 'border-white/10'} focus:border-brand rounded-xl p-4 outline-none text-white text-sm transition-all backdrop-blur-sm`}
                                         />
-                                        {errors.name && <p className="text-red-400 text-[9px] font-bold mt-1 ml-1 uppercase">{errors.name.message}</p>}
+                                        {errors.full_name && <p className="text-red-400 text-[9px] font-bold mt-1 ml-1 uppercase">{errors.full_name.message}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1">Email Address</label>
