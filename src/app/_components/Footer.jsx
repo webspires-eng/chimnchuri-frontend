@@ -15,10 +15,7 @@ const Footer = () => {
                         <h3 className='text-xl lg:text-2xl font-bold mb-2 md:mb-4'>Help</h3>
                         <ul>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/categories"}>Menu</Link>
-                            </li>
-                            <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/categories"}>Order online</Link>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/categories"}>Our Menu</Link>
                             </li>
                             <li className=''>
                                 <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/contact"}>Contact Us</Link>
