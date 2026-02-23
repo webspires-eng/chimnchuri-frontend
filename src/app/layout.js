@@ -5,10 +5,21 @@ import ReduxProvider from "../store/Provider";
 import { settings } from "@/lib/api";
 import { SettingsProvider } from "./providers/SettingsProvider";
 import { ToastContainer, toast } from 'react-toastify';
+
+import { Luckiest_Guy } from 'next/font/google'
+
+const luckiestGuy = Luckiest_Guy({
+  subsets: ['latin'],
+  weight: '400',
+  display: 'swap',
+})
+
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
+
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -27,7 +38,7 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body
         cz-shortcut-listen="true"
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${luckiestGuy.className} antialiased`}
       >
         <ReduxProvider>
           <SettingsProvider settings={data}>

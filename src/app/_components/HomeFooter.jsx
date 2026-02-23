@@ -12,7 +12,7 @@ const HomeFooter = () => {
             <section className="py-10 lg:py-20">
                 <div className="max-w-xl mx-auto text-center  font-bold uppercase">
                     {/* <img src={settings?.restaurant_logo ? process.env.NEXT_PUBLIC_BASE_URL + "/" + settings?.restaurant_logo : "/logo.png"} className='h-[100px] mx-auto' alt="" /> */}
-                    <img src={settings?.restaurant_logo ? `${process.env.NEXT_PUBLIC_BASE_URL}/${settings?.restaurant_logo}` : "/logo-light.png"} className='h-[100px] mx-auto' onError={(e) => e.target.src = "/logo-light.png"} alt="Chim 'N' Churri " width={100} height={60} />
+                    <img src={settings?.restaurant_logo ? `${process.env.NEXT_PUBLIC_BASE_URL}/${settings?.restaurant_logo}` : "/logo-light.png"} className='h-[100px] mx-auto' onError={(e) => e.target.src = "/logo-light.png"} alt="Chim 'N' Churri " />
                     {/* <h3 className="text-3xl md:text-5xl text-brand text-shadow-lg uppercase ">{settings?.restaurant_name}</h3> */}
 
                     <div className="flex flex-wrap items-center justify-center gap-5 font-bold text-md mt-8">
