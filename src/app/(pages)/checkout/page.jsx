@@ -86,6 +86,11 @@ export default function CheckoutPage() {
             toast.error(`Please allocate all ${totalCartQty} items to time slots. Currently allocated: ${allocatedTotal}`);
             return;
         }
+        if (timeSlots?.length === 0) {
+            toast.error("No time slots available");
+            return;
+        }
+
 
         if (paymentMethod === "online" && !isOnlineEnabled) {
             toast.error("Online payment is not enabled");
@@ -206,35 +211,44 @@ export default function CheckoutPage() {
                                     <div className="grid grid-cols-1 gap-3">
                                         {timeSlotsLoading ? (
                                             <div className="text-zinc-500 text-sm animate-pulse">Loading time slots...</div>
-                                        ) : timeSlots?.data?.map((slot) => (
-                                            <div key={slot.id} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${slot.disabled ? 'opacity-50 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
-                                                <div className="flex-1">
-                                                    <div className="text-sm font-bold text-white">{slot.start_time} - {slot.end_time}</div>
-                                                    <div className="text-[10px] text-zinc-400 uppercase tracking-widest mt-0.5">Capacity: {slot.max_capacity}</div>
-                                                </div>
-                                                <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-xl overflow-hidden shadow-inner">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleAllocationChange(slot.id, (allocations[slot.id] || 0) - 1, slot.max_capacity)}
-                                                        disabled={slot.disabled || (allocations[slot.id] || 0) <= 0}
-                                                        className="p-3 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                                    >
-                                                        <FaMinus size={10} />
-                                                    </button>
-                                                    <div className="w-10 text-center text-sm font-bold text-white tabular-nums">
-                                                        {allocations[slot.id] || 0}
+                                        ) : timeSlots?.data?.map((slot) => {
+                                            if (slot?.disabled) return;
+                                            return (
+                                                <div key={slot.id} className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${slot.disabled ? 'opacity-50 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
+                                                    <div className="flex-1">
+                                                        <div className="text-sm font-bold text-white">{slot.start_time}</div>
+                                                        <div className="text-[10px] text-zinc-300 uppercase tracking-widest mt-0.5">Capacity: {slot.max_capacity}</div>
                                                     </div>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleAllocationChange(slot.id, (allocations[slot.id] || 0) + 1, slot.max_capacity)}
-                                                        disabled={slot.disabled || (allocations[slot.id] || 0) >= slot.max_capacity || allocatedTotal >= totalCartQty}
-                                                        className="p-3 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                                    >
-                                                        <FaPlus size={10} />
-                                                    </button>
+                                                    <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-xl overflow-hidden shadow-inner">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleAllocationChange(slot.id, (allocations[slot.id] || 0) - 1, slot.max_capacity)}
+                                                            disabled={slot.disabled || (allocations[slot.id] || 0) <= 0}
+                                                            className="p-3 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                        >
+                                                            <FaMinus size={10} />
+                                                        </button>
+                                                        <div className="w-10 text-center text-sm font-bold text-white tabular-nums">
+                                                            {allocations[slot.id] || 0}
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleAllocationChange(slot.id, (allocations[slot.id] || 0) + 1, slot.max_capacity)}
+                                                            disabled={slot.disabled || (allocations[slot.id] || 0) >= slot.max_capacity || allocatedTotal >= totalCartQty}
+                                                            className="p-3 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                        >
+                                                            <FaPlus size={10} />
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            )
+                                        })}
+                                        {
+                                            timeSlots?.length === 0 && (
+                                                <div className="text-zinc-200 border border-zinc-500 bg-zinc-900 rounded-2xl px-2 py-4 text-center text-sm animate-pulse">No time slots available</div>
+                                            )
+                                        }
+
                                     </div>
                                     {allocatedTotal !== totalCartQty && <p className="text-[12px] text-red-400 font-medium">* Total items ({totalCartQty}) must be fully allocated.</p>}
                                 </div>

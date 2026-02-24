@@ -7,6 +7,7 @@ import { SettingsProvider } from "./providers/SettingsProvider";
 import { ToastContainer, toast } from 'react-toastify';
 
 import { Luckiest_Guy } from 'next/font/google'
+import Header from "./_components/Header";
 
 const luckiestGuy = Luckiest_Guy({
   subsets: ['latin'],
@@ -43,6 +44,8 @@ export default async function RootLayout({ children }) {
         <ReduxProvider>
           <SettingsProvider settings={data}>
             <ReactQueryProvider>
+              <Header />
+
               {children}
               <ToastContainer />
             </ReactQueryProvider>

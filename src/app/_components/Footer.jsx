@@ -8,23 +8,23 @@ const Footer = () => {
     const settings = useSettings();
     const socialLinks = settings?.social_links ? JSON.parse(settings?.social_links) : null;
     return (
-        <footer className='mt-auto'>
-            <div className="container mx-auto px-3 pt-10">
+        <footer className='mt-auto bg-brand'>
+            <div className="container mx-auto px-3 pt-14">
                 <div className='grid grid-cols-2 lg:grid-cols-3 gap-3'>
                     <div className="mb-2">
                         <h3 className='text-xl lg:text-2xl font-bold mb-2 md:mb-4'>Quick Links</h3>
                         <ul>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/categories"}>Our Menu</Link>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/categories"}>Our Menu</Link>
                             </li>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/contact"}>Contact Us</Link>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/contact"}>Contact Us</Link>
                             </li>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/about"}>About Us</Link>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/about"}>About Us</Link>
                             </li>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={"/team"}>Our Team</Link>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/team"}>Our Team</Link>
                             </li>
                         </ul>
                     </div>
@@ -35,13 +35,13 @@ const Footer = () => {
                         <h3 className='text-xl lg:text-2xl font-bold mb-2 md:mb-4'>Address</h3>
                         <ul>
                             <li className=''>
-                                <p className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block'>{settings?.address}, {settings?.city}, {settings?.state}, {settings?.postcode}</p>
+                                <p className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block'>{settings?.address}, {settings?.city}, {settings?.state}, {settings?.postcode}</p>
                             </li>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={`tel:${settings?.phone}`}>{settings?.phone}</Link>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={`tel:${settings?.phone}`}>{settings?.phone}</Link>
                             </li>
                             <li className=''>
-                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-brand transition ease duration-200 inline-block' href={`mailto:${settings?.email}`}>{settings?.email}</Link>
+                                <Link className='text-sm break-all md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={`mailto:${settings?.email}`}>{settings?.email}</Link>
                             </li>
 
                         </ul>
@@ -128,11 +128,11 @@ const Footer = () => {
             <div className="border-b border-gray-600/40 my-4"></div>
             <div className="container mx-auto pb-4 px-2 md:px-4">
                 <div className="flex gap-3 text-center md:text-left flex-col md:flex-row items-center justify-center md:justify-between">
-                    <p>{new Date().getFullYear()} © {settings?.restaurant_name}. Developed by <a target='_blank' href="https://webspires.co.uk/?utm_source=chimnchurri" className="text-white hover:text-brand transition-all duration-500">Webspires</a></p>
+                    <p>{new Date().getFullYear()} © {settings?.restaurant_name}. Developed by <a target='_blank' href="https://webspires.co.uk/?utm_source=chimnchurri" className="text-white hover:text-black transition-all duration-500">Webspires</a></p>
 
                     <div className="flex items-center gap-4">
-                        <Link href="/privacy" className="hover:text-brand transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-brand transition-colors">Terms & Conditions</Link>
+                        <Link href="/privacy" className="hover:text-black transition-colors">Privacy Policy</Link>
+                        <Link href="/terms" className="hover:text-black transition-colors">Terms & Conditions</Link>
                     </div>
                 </div>
             </div>

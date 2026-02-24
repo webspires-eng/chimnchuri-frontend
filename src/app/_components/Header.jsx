@@ -52,7 +52,7 @@ const Header = () => {
 
                     <a href="/">
                         {/* <Image src={settings?.restaurant_logo ? `${process.env.NEXT_PUBLIC_BASE_URL}/${settings?.restaurant_logo}` : "/logo-light.png"} alt="Chim 'N' Churri " width={100} height={60} /> */}
-                        <img src={settings?.restaurant_logo ? `${process.env.NEXT_PUBLIC_BASE_URL}/${settings?.restaurant_logo}` : "/logo-light.png"} onError={(e) => e.target.src = "/logo-light.png"} alt="Chim 'N' Churri " width={100} height={60} />
+                        <img src={`${process.env.NEXT_PUBLIC_BASE_URL}/${settings?.restaurant_logo}`} onError={(e) => e.target.src = "/logo-light.png"} alt="Chim 'N' Churri " className='size-[100px]' />
                     </a>
 
                     <ul className='hidden lg:flex lg:relative items-center gap-8 font-medium text-xl'>
@@ -105,9 +105,9 @@ const Header = () => {
                 </button>
 
                 <ul className='grid text-black gap-2 pt-10 '>
-                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link className='block px-2 py-2 ' href={"/categories"}>Our Menu</Link></li>
-                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link className='block px-2 py-2 ' href={"/about"}>About</Link></li>
-                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link className='block px-2 py-2 ' href={"/contact"}>Contact</Link></li>
+                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/categories"}>Our Menu</Link></li>
+                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/about"}>About</Link></li>
+                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/contact"}>Contact</Link></li>
                     <li className='mt-4'><Link href={"/categories"}
                         className=' py-2 w-full flex justify-center items-center text-white text-center bg-brand rounded-xl text-lg hover:bg-black hover:text-white transition-all duration-500'
                     >Order Online</Link></li>

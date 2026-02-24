@@ -9,13 +9,13 @@ import HomeFooter from "./_components/HomeFooter";
 export default function Home() {
   return (
     <>
-      <div className="flex flex-col justify-between min-h-dvh">
+      <div className="flex flex-col border-t border-brand/90 justify-between min-h-dvh">
         <HeroSection />
 
         <section className="py-10 lg:py-20 ">
           <MenuSection />
         </section>
-        <div className="pb-4">
+        <div className="">
           <HomeFooter />
         </div>
       </div>

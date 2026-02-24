@@ -123,7 +123,7 @@ const ProfileEditClient = () => {
                                 <div className="relative group">
                                     <div className="w-32 h-32 rounded-3xl bg-[#1c1c1c] border-4 border-white/5 overflow-hidden shadow-2xl flex items-center justify-center">
                                         {previewImage ? (
-                                            <img src={previewImage} alt="Profile Preview" className="w-full h-full object-cover" />
+                                            <img src={previewImage} alt="" className="w-full h-full object-cover" />
                                         ) : (
                                             <FaUser className="text-zinc-700" size={64} />
                                         )}

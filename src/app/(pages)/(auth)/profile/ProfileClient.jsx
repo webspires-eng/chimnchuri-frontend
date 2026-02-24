@@ -90,7 +90,7 @@ const ProfileClient = () => {
                                 <div className="w-24 h-24 rounded-2xl bg-[#141414] border-4 border-[#1c1c1c] shadow-2xl flex items-center justify-center p-1 overflow-hidden">
                                     {
                                         userData?.image ? (
-                                            <Img src={`${process.env.NEXT_PUBLIC_BASE_URL}/storage/${userData?.image}`} alt="Profile" className="w-full h-full object-cover rounded-2xl" />
+                                            <Img src={`${process.env.NEXT_PUBLIC_BASE_URL}/storage/${userData?.image}`} onError={(e) => e.target.remove()} className="w-full h-full object-cover rounded-2xl" />
                                         ) : (
                                             <div className="w-full h-full rounded-2xl bg-brand/10 flex items-center justify-center">
                                                 <span className="text-4xl font-black text-brand">{userData?.name?.charAt(0).toUpperCase()}</span>
