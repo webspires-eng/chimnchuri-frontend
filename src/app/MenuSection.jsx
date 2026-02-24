@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 /* ─── Steak SVG shared across all 3 slices ─── */
@@ -158,28 +158,31 @@ export default function MenuSection() {
   const heroRef = useRef(null);
   const plateGlowRef = useRef(null);
 
-  /* Reset knife animation on mouse leave */
-  const handleMouseLeave = useCallback(() => {
-    setIsOpen(false);
-    const knife = knifeRef.current;
-    if (!knife) return;
-    knife.style.animation = "none";
-    knife.offsetHeight; // trigger reflow
-    knife.style.animation = "";
-  }, []);
+  /* Auto-slice when section scrolls into view */
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
 
-  const handleMouseEnter = useCallback(() => {
-    setIsOpen(true);
-  }, []);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsOpen(true);
+        } else {
+          setIsOpen(false);
+          const knife = knifeRef.current;
+          if (knife) {
+            knife.style.animation = "none";
+            knife.offsetHeight; // trigger reflow
+            knife.style.animation = "";
+          }
+        }
+      },
+      { threshold: 0.4 }
+    );
 
-  const handleToggleOpen = useCallback((e) => {
-    // Only toggle via click if it's a touch device or we want click-to-open
-    // On desktop, hover handles it. On mobile, the first touch triggers "hover" 
-    // but we can use this to be explicit.
-    if (!isOpen) {
-      setIsOpen(true);
-    }
-  }, [isOpen]);
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
 
   /* Subtle parallax on hero mouse-move */
   useEffect(() => {
@@ -439,28 +442,8 @@ export default function MenuSection() {
           100% { opacity: 0; transform: scaleY(1.2); }
         }
 
-        .hero-hint {
-          position: relative;
-          z-index: 10;
-          margin-top: 40px;
-          font-weight: 300;
-          font-size: 0.75rem;
-          letter-spacing: 5px;
-          color: var(--color-text-dim);
-          text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          animation: hintPulse 3s ease-in-out infinite;
-          transition: opacity 0.5s ease;
-        }
 
-        .is-open .hero-hint {
-          opacity: 0;
-          pointer-events: none;
-        }
 
-        @keyframes hintPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
         @media (max-width: 768px) {
           .steak-stage { width: 340px; height: 340px; }
@@ -501,9 +484,6 @@ export default function MenuSection() {
       <div
         className="steak-stage"
         id="steak-stage"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleToggleOpen}
       >
         {/* Plate / glow behind steak */}
         <div className="plate-glow" ref={plateGlowRef} />
@@ -578,11 +558,7 @@ export default function MenuSection() {
         <div className="cut-line cut-line-2" />
       </div>
 
-      {/* Instruction text */}
-      <p className="hero-hint" id="hero-hint">
-        <span className="hint-icon">🔪</span>
-        {isOpen ? "SELECT A SLICE" : "TOUCH TO SLICE"}
-      </p>
+
     </section>
   );
 }
