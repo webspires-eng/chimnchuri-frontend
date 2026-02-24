@@ -4,6 +4,12 @@
 
 import { apiClient } from "./apiClient";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://admin.chimnchurri.com";
+function getBaseUrl() {
+    const isServer = typeof window === "undefined";
+    return isServer ? `${BACKEND_URL}/api/v1/frontend` : `/api/v1/frontend`;
+}
+
 
 export const registerApi = async (data) => {
     const res = await apiClient("/register", {
@@ -16,7 +22,7 @@ export const registerApi = async (data) => {
 }
 
 export async function login(data) {
-    const res = await fetch(`/api/v1/frontend/login`, {
+    const res = await fetch(`${getBaseUrl()}/login`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -49,7 +55,7 @@ export const updateProfile = (data) => {
     });
 
 
-    return fetch(`/api/v1/frontend/profile`, {
+    return fetch(`${getBaseUrl()}/profile`, {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -63,7 +69,7 @@ export const updateProfile = (data) => {
 
 // GET ALL CATEGORIES
 export async function fetchCategories() {
-    const res = await fetch(`/api/v1/frontend/categories`);
+    const res = await fetch(`${getBaseUrl()}/categories`);
 
     if (!res.ok) {
         throw new Error("Failed to fetch categories");
@@ -73,7 +79,7 @@ export async function fetchCategories() {
 }
 
 export async function fetchCategory(slug) {
-    const res = await fetch(`/api/v1/frontend/categories/${slug}`);
+    const res = await fetch(`${getBaseUrl()}/categories/${slug}`);
     if (!res.ok) {
         throw new Error("Failed to fetch category");
     }

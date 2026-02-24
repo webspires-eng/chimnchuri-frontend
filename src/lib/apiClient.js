@@ -1,6 +1,11 @@
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://admin.chimnchurri.com";
+
 export async function apiClient(url, options = {}) {
-    const baseUrl = '/api/v1/frontend';
+    const isServer = typeof window === "undefined";
+    const baseUrl = isServer
+        ? `${BACKEND_URL}/api/v1/frontend`
+        : '/api/v1/frontend';
     const response = await fetch(`${baseUrl}${url}`, {
         ...options,
         headers: {
