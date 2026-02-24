@@ -60,7 +60,7 @@ const Header = () => {
                         <li><Link href={"/about"}>About</Link></li>
                         <li><Link href={"/contact"}>Contact</Link></li>
                         <li><Link href={"/categories"}
-                            className='px-6 pt-2.5 pb-1.5 rounded-[5px] text-base font-semibold bg-white text-brand border-none hover:bg-white/90 transition-all duration-300 flex items-center justify-center leading-none'
+                            className='px-6 py-2 rounded-[5px] text-base font-semibold bg-white text-brand border-none hover:bg-white/90 transition-all duration-300 inline-flex items-center'
                         >Order Online</Link></li>
                     </ul>
 
