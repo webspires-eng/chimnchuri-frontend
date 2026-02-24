@@ -13,7 +13,7 @@ export default function Home() {
       <div className="flex flex-col border-t border-brand/90 justify-between min-h-dvh">
         <HeroSection />
 
-        <section className="py-10 lg:py-20 ">
+        <section>
           <MenuSection />
         </section>
         <FoodGallery />

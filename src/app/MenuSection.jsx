@@ -7,10 +7,10 @@ import Link from "next/link";
 function SteakSVG({ id }) {
   return (
     <svg
-      viewBox="0 0 440 350"
+      viewBox="0 35 440 260"
       xmlns="http://www.w3.org/2000/svg"
       className="steak-vector"
-      preserveAspectRatio="xMidYMid meet"
+      preserveAspectRatio="none"
     >
       <defs>
         <linearGradient id={`${id}-side`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -450,23 +450,24 @@ export default function MenuSection() {
 
         @media (max-width: 768px) {
           .hero-steak {
-            min-height: 100vh;
+            min-height: auto;
+            padding: 0;
           }
           .steak-stage { 
             width: 90vw; 
-            height: 85vh; 
+            height: auto; 
           }
           .steak-container { 
             width: 85vw; 
             height: auto;
-            aspect-ratio: 440 / 350;
+            aspect-ratio: 440 / 620;
           }
           .card-label { 
             font-size: 2.4rem; 
             letter-spacing: 6px; 
           }
-          .is-open .slice-1 { transform: translateY(-100px) scale(1.02); }
-          .is-open .slice-3 { transform: translateY(100px) scale(1.02); }
+          .is-open .slice-1 { transform: translateY(-150px) scale(1.02); }
+          .is-open .slice-3 { transform: translateY(150px) scale(1.02); }
           .plate-glow {
             width: 80vw;
             height: 80vw;
@@ -478,30 +479,27 @@ export default function MenuSection() {
         }
 
         @media (max-width: 480px) {
-          .hero-steak {
-            min-height: 100vh;
-          }
           .steak-stage { 
             width: 95vw; 
-            height: 80vh; 
+            height: auto; 
           }
           .steak-container { 
             width: 90vw; 
             height: auto;
-            aspect-ratio: 440 / 350;
+            aspect-ratio: 440 / 620;
           }
           .card-label { 
             font-size: 2.2rem; 
             letter-spacing: 5px; 
           }
-          .is-open .slice-1 { transform: translateY(-90px) scale(1.02); }
-          .is-open .slice-3 { transform: translateY(90px) scale(1.02); }
+          .is-open .slice-1 { transform: translateY(-130px) scale(1.02); }
+          .is-open .slice-3 { transform: translateY(130px) scale(1.02); }
         }
 
         @media (max-width: 360px) {
           .steak-stage { 
             width: 98vw;
-            height: 75vh;
+            height: auto;
           }
           .steak-container {
             width: 92vw;
