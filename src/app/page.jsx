@@ -4,6 +4,7 @@ import { FaEnvelope, FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import MenuSection from "./MenuSection";
 import HeroSection from "./_components/HeroSection";
 import HomeFooter from "./_components/HomeFooter";
+import FoodGallery from "./_components/FoodGallery";
 
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
         <section className="py-10 lg:py-20 ">
           <MenuSection />
         </section>
+        <FoodGallery />
         <div className="">
           <HomeFooter />
         </div>
