@@ -53,7 +53,7 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body
         cz-shortcut-listen="true"
-        className={`${luckiestGuy.className} antialiased`}
+        className={`antialiased`}
       >
         <ReduxProvider>
           <SettingsProvider settings={data}>

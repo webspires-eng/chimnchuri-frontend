@@ -99,7 +99,7 @@ const HomeFooter = () => {
 
                 </div>
             </section>
-            <div className="text-center bg-brand pb-4 text-sm md:text-lg">
+            <div className="text-center bg-brand pb-4 text-xs sm:text-sm md:text-lg">
                 <p>{new Date().getFullYear()} © {settings?.restaurant_name}. Developed by <a target='_blank' href="https://webspires.co.uk/?utm_source=chimnchurri" className="text-white hover:text-black transition-all duration-500">Webspires</a></p>
             </div>
         </>

@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Gagalin';
+  src: url('/fonts/Gagalin.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -67,7 +76,7 @@
 body {
   background: var(--foreground);
   color: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Gagalin', "sans-serif";
 }
 
 .StripeElement input {

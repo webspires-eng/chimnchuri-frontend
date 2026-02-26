@@ -17,7 +17,7 @@ const FoodGallery = () => {
         <section className="w-full py-12 lg:py-20 bg-[#0a0a0a] overflow-hidden">
             <div className="w-full">
                 <motion.div
-                    className="flex gap-2 md:gap-4"
+                    className="flex"
                     animate={{
                         x: ["0%", "-50%"],
                     }}
@@ -33,7 +33,7 @@ const FoodGallery = () => {
                     {marqueeImages.map((src, i) => (
                         <div
                             key={i}
-                            className="group relative flex-shrink-0 w-[150px] sm:w-[150px] md:w-[200px] lg:w-[250px] aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer"
+                            className="group relative flex-shrink-0 w-[150px] sm:w-[150px] md:w-[200px] lg:w-[250px] aspect-[3/4] overflow-hidden cursor-pointer"
                         >
                             <img
                                 src={src}
