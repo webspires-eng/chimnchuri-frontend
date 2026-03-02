@@ -148,7 +148,6 @@ export default function CheckoutPage() {
         const errorMessages = [];
         if (formErrors.full_name) errorMessages.push("Full name is required");
         if (formErrors.email) errorMessages.push("Email is required");
-        if (formErrors.phone) errorMessages.push("Phone number is required");
         if (formErrors.street_address) errorMessages.push("Street address is required");
         if (formErrors.city) errorMessages.push("City is required");
 
@@ -521,7 +520,7 @@ export default function CheckoutPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                 <InputField label="Full name" name="full_name" placeholder="John Doe" options={{ required: "Name is required" }} />
                                 <InputField label="Email" name="email" placeholder="Email Address" options={{ required: "Email is required" }} />
-                                <InputField label="Phone Number" name="phone" placeholder="+44 7700 900000" options={{ required: "Phone is required" }} />
+                                <InputField label="Phone Number (Optional)" name="phone" placeholder="+44 7700 900000" />
                                 {orderType === 'delivery' && (
                                     <>
                                         <div className="md:col-span-2">
@@ -549,7 +548,7 @@ export default function CheckoutPage() {
                                                 <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl border transition-all ${slot.disabled ? 'opacity-50 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
                                                     <div className="flex-1">
                                                         <div className="text-xs sm:text-sm font-bold text-white">{slot.start_time}</div>
-                                                        <div className="text-[9px] sm:text-[10px] text-zinc-300 uppercase tracking-widest mt-0.5">Capacity: {slot.max_capacity}</div>
+                                                        <div className="text-[9px] sm:text-[10px] text-zinc-300 uppercase tracking-widest mt-0.5">{slot.max_capacity} {slot.max_capacity === 1 ? 'steak' : 'steaks'} left</div>
                                                     </div>
                                                     <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl overflow-hidden shadow-inner">
                                                         <button
@@ -744,8 +743,8 @@ export default function CheckoutPage() {
                                                 <div className="mt-2 sm:mt-3 text-[9px] sm:text-[10px] space-y-0.5">
                                                     {item.selectedAddons.map((addon, aIdx) => (
                                                         <div key={aIdx} className="flex justify-between text-zinc-300">
-                                                            <span>+ {addon.name}</span>
-                                                            <span className="text-zinc-300 ml-2">{symbol} {parseFloat(addon.price) || 0}</span>
+                                                            <span>+ {addon.qty > 1 ? `${addon.qty}x ` : ''}{addon.name}</span>
+                                                            <span className="text-zinc-300 ml-2">{symbol} {(parseFloat(addon.price) * addon.qty).toFixed(2)}</span>
                                                         </div>
                                                     ))}
                                                 </div>

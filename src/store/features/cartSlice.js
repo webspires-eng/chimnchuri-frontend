@@ -23,11 +23,11 @@ const cartSlice = createSlice({
             let addonTotal = 0;
 
             if (selectedAddons && addonGroups) {
-                Object.entries(selectedAddons).forEach(([groupId, addonIds]) => {
+                Object.entries(selectedAddons).forEach(([groupId, addonQtys]) => {
                     const group = addonGroups.find(g => g.id === parseInt(groupId));
                     if (group) {
-                        addonIds.forEach(addonId => {
-                            const addon = group.items.find(a => a.id === addonId);
+                        Object.entries(addonQtys).forEach(([addonId, qty]) => {
+                            const addon = group.items.find(a => a.id === parseInt(addonId));
                             if (addon) {
                                 let price = parseFloat(addon.price);
                                 if (!price || price === 0) {
@@ -37,11 +37,11 @@ const cartSlice = createSlice({
                                     id: addon.id,
                                     name: addon.addon_item.name,
                                     price: price,
-                                    qty: 1, // Default quantity for addons
+                                    qty: qty,
                                     category: group.addon_category.name,
                                     groupId: group.id
                                 });
-                                addonTotal += price;
+                                addonTotal += price * qty;
                             }
                         });
                     }

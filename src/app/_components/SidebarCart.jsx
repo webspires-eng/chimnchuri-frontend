@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FaTimes, FaTrash, FaMinus, FaPlus, FaShoppingBag, FaArrowRight } from 'react-icons/fa'
 import { toggleCart, removeFromCart, incrementQuantity, decrementQuantity } from '@/store/features/cartSlice'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Img from './Img'
 import { useCurrency } from '../providers/SettingsProvider'
 import { toast } from 'react-toastify'
@@ -11,6 +12,7 @@ import { toast } from 'react-toastify'
 
 const SidebarCart = () => {
     const dispatch = useDispatch()
+    const router = useRouter()
 
     const { code, symbol, format } = useCurrency();
 
@@ -89,7 +91,10 @@ const SidebarCart = () => {
                                     <p className="text-sm text-zinc-400 mt-1">Looks like you haven&apos;t added anything yet.</p>
                                 </div>
                                 <button
-                                    onClick={() => dispatch(toggleCart(false))}
+                                    onClick={() => {
+                                        dispatch(toggleCart(false))
+                                        router.push('/categories/1')
+                                    }}
                                     className="px-6 py-3 bg-brand hover:bg-green-700 text-white rounded-xl font-semibold text-sm transition-all duration-300 shadow-lg shadow-brand/20 cursor-pointer"
                                 >
                                     Start Ordering
@@ -141,11 +146,15 @@ const SidebarCart = () => {
                                                         <div key={category} className="text-[11px]">
                                                             <span className="font-medium text-zinc-400">{category}:</span>
                                                             <div className="flex flex-col ml-2">
-                                                                {addons.map((addon, idx) => (
-                                                                    <span key={`${addon.id}-${idx}`} className="text-zinc-400">
-                                                                        + {addon.name} <span className="text-zinc-500">({symbol} {parseFloat(addon.price) || parseFloat(addon.addon_item?.price) || 0})</span>
-                                                                    </span>
-                                                                ))}
+                                                                {addons.map((addon, idx) => {
+                                                                    const addonPrice = parseFloat(addon.price) || parseFloat(addon.addon_item?.price) || 0;
+                                                                    const addonQty = addon.qty || 1;
+                                                                    return (
+                                                                        <span key={`${addon.id}-${idx}`} className="text-zinc-400">
+                                                                            + {addonQty > 1 ? `${addonQty}x ` : ''}{addon.name} <span className="text-zinc-500">({symbol} {(addonPrice * addonQty).toFixed(2)})</span>
+                                                                        </span>
+                                                                    );
+                                                                })}
                                                             </div>
                                                         </div>
                                                     ))}

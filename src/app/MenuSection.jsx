@@ -148,8 +148,8 @@ const steamWisps = [
 
 /* ─── Slice data ─── */
 const slicesData = [
-  { id: "s1", label: "MENU", href: "https://www.chimnchurri.com/categories/1" },
-  { id: "s2", label: "ORDER", href: "https://www.chimnchurri.com/categories/1" },
+  { id: "s1", label: "MENU", href: "/categories/1" },
+  { id: "s2", label: "ORDER", href: "/categories/1" },
   { id: "s3", label: "TEAM", href: "/team" },
 ];
 

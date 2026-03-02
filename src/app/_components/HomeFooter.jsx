@@ -17,7 +17,7 @@ const HomeFooter = () => {
 
                     <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 font-bold text-md mt-8">
                         <Link href="/" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Home</Link>
-                        <a href="https://www.chimnchurri.com/categories/1" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Our Menu</a>
+                        <a href="/categories/1" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Our Menu</a>
                         <Link href="/contact" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Contact</Link>
                         <Link href="/team" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Team</Link>
                         <Link href="/privacy" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Privacy Policy</Link>

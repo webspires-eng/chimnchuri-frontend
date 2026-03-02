@@ -44,40 +44,45 @@ const ItemModal = () => {
         setErrorGroupId(null);
     }, [data, isModalOpen]);
 
-    const handleAddonChange = (group, addonId) => {
+    const handleAddonChange = (group, addonId, delta) => {
         setValidationError("");
         setErrorGroupId(null);
         setSelectedAddons(prev => {
-            const currentSelection = prev[group.id] || [];
-            let newSelection = [...currentSelection];
+            const currentGroupQtys = prev[group.id] || {};
+            const currentQty = currentGroupQtys[addonId] || 0;
+            const newQty = Math.max(0, currentQty + delta);
 
             if (group.selection_type === 'single') {
-                if (currentSelection.includes(addonId)) {
-                    // Allow deselecting if min_qty is not set or is 0
+                // For single selection: if adding, set this addon to 1 and clear others
+                if (delta > 0) {
+                    return { ...prev, [group.id]: { [addonId]: 1 } };
+                } else {
                     const minQty = group.min_qty ? parseInt(group.min_qty) : 0;
                     if (minQty === 0) {
-                        newSelection = [];
+                        const updated = { ...currentGroupQtys };
+                        delete updated[addonId];
+                        return { ...prev, [group.id]: updated };
                     }
-                } else {
-                    newSelection = [addonId];
+                    return prev;
                 }
             } else {
-                if (currentSelection.includes(addonId)) {
-                    newSelection = currentSelection.filter(id => id !== addonId);
-                } else {
-                    // Only check max_qty if it's set
-                    if (group.max_qty && currentSelection.length >= group.max_qty) {
-                        alert(`You can only select up to ${group.max_qty} items`);
-                        return prev;
-                    }
-                    newSelection = [...currentSelection, addonId];
-                }
-            }
+                // For multiple selection: allow quantity per addon
+                const totalGroupQty = Object.entries(currentGroupQtys)
+                    .filter(([id]) => id !== String(addonId))
+                    .reduce((sum, [, q]) => sum + q, 0) + newQty;
 
-            return {
-                ...prev,
-                [group.id]: newSelection
-            };
+                if (group.max_qty && totalGroupQty > group.max_qty) {
+                    return prev;
+                }
+
+                const updated = { ...currentGroupQtys };
+                if (newQty === 0) {
+                    delete updated[addonId];
+                } else {
+                    updated[addonId] = newQty;
+                }
+                return { ...prev, [group.id]: updated };
+            }
         });
     }
 
@@ -91,15 +96,15 @@ const ItemModal = () => {
 
         let total = discountedBasePrice;
 
-        Object.entries(selectedAddons).forEach(([groupId, addonIds]) => {
+        Object.entries(selectedAddons).forEach(([groupId, addonQtys]) => {
             const group = addon_groups?.find(g => g.id === parseInt(groupId));
             if (group) {
-                addonIds.forEach(addonId => {
-                    const addon = group.items.find(a => a.id === addonId);
+                Object.entries(addonQtys).forEach(([addonId, qty]) => {
+                    const addon = group.items.find(a => a.id === parseInt(addonId));
                     if (addon) {
                         let price = parseFloat(addon.price);
                         if (!price || price === 0) price = parseFloat(addon.addon_item?.price) || 0;
-                        total += price;
+                        total += price * qty;
                     }
                 });
             }
@@ -110,11 +115,11 @@ const ItemModal = () => {
 
     const validateAddons = () => {
         for (let group of addon_groups) {
-            const selectedCount = (selectedAddons[group.id] || []).length;
+            const groupQtys = selectedAddons[group.id] || {};
+            const selectedCount = Object.values(groupQtys).reduce((sum, q) => sum + q, 0);
             const minQty = group.min_qty ? parseInt(group.min_qty) : 0;
             const isRequired = group.is_required;
 
-            // If required, selectedCount must be at least minQty (or at least 1)
             if (isRequired && selectedCount < Math.max(minQty, 1)) {
                 const name = group.addon_category?.name || 'option';
                 if (group.selection_type === 'single') {
@@ -126,7 +131,6 @@ const ItemModal = () => {
                 return false;
             }
 
-            // If not required but has a minQty, allow 0 OR >= minQty
             if (!isRequired && minQty > 0 && selectedCount > 0 && selectedCount < minQty) {
                 setValidationError(`Please select at least ${minQty} item(s) from ${group.addon_category?.name || 'options'}`);
                 setErrorGroupId(group.id);
@@ -269,15 +273,13 @@ const ItemModal = () => {
                             {addon_groups?.length > 0 && (
                                 <div className="space-y-5">
                                     {addon_groups.map((group) => {
-                                        const groupCount = (selectedAddons[group.id] || []).length;
+                                        const groupQtys = selectedAddons[group.id] || {};
+                                        const groupCount = Object.values(groupQtys).reduce((sum, q) => sum + q, 0);
                                         const minQty = group.min_qty ? parseInt(group.min_qty) : 0;
                                         const maxQty = group.max_qty;
                                         const isRequired = group.is_required;
                                         const hasError = errorGroupId === group.id;
 
-                                        // Error state if:
-                                        // 1. Required and count < min
-                                        // 2. Not required, but count > 0 and count < min
                                         const isUnderMin = isRequired
                                             ? groupCount < Math.max(minQty, 1)
                                             : (groupCount > 0 && groupCount < minQty);
@@ -320,64 +322,95 @@ const ItemModal = () => {
 
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                     {group.items?.map((addon) => {
-                                                        const isSelected = (selectedAddons[group.id] || []).includes(addon.id);
-                                                        const isDisabled = !isSelected && group.selection_type === 'multiple' && group.max_qty && (selectedAddons[group.id] || []).length >= group.max_qty;
+                                                        const addonQty = (groupQtys[addon.id] || 0);
+                                                        const isSelected = addonQty > 0;
+                                                        const totalGroupQty = groupCount;
+                                                        const isMaxReached = group.max_qty && totalGroupQty >= group.max_qty;
 
+                                                        let addonPrice = parseFloat(addon.price);
+                                                        if (!addonPrice || addonPrice === 0) addonPrice = parseFloat(addon.addon_item?.price) || 0;
+
+                                                        if (group.selection_type === 'single') {
+                                                            return (
+                                                                <label
+                                                                    key={addon.id}
+                                                                    onClick={() => isSelected ? handleAddonChange(group, addon.id, -1) : handleAddonChange(group, addon.id, 1)}
+                                                                    className={`
+                                                                    flex items-center gap-3 px-3 py-2.5 rounded-xl border cursor-pointer
+                                                                    transition-all duration-300
+                                                                    ${isSelected
+                                                                            ? 'border-brand bg-brand/10 shadow-sm shadow-brand/5'
+                                                                            : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]'
+                                                                        }
+                                                                `}
+                                                                >
+                                                                    <div className={`
+                                                                    w-[18px] h-[18px] shrink-0 flex items-center justify-center
+                                                                    transition-all duration-300 border-2 rounded-full
+                                                                    ${isSelected ? 'bg-brand border-brand' : 'border-zinc-500 bg-transparent'}
+                                                                `}>
+                                                                        {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                                                    </div>
+
+                                                                    {addon.addon_item?.image && (
+                                                                        <Img src={addon.addon_item.image} alt="" className="w-8 h-8 rounded-lg object-cover bg-zinc-700 shrink-0" />
+                                                                    )}
+
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className={`text-sm font-medium truncate ${isSelected ? 'text-white' : 'text-zinc-300'}`}>{addon.addon_item?.name}</p>
+                                                                    </div>
+
+                                                                    <span className={`text-xs whitespace-nowrap font-medium ${isSelected ? 'text-brand' : 'text-zinc-400'}`}>
+                                                                        + {symbol} {addonPrice}
+                                                                    </span>
+                                                                </label>
+                                                            );
+                                                        }
+
+                                                        // Multiple selection with quantity controls
                                                         return (
-                                                            <label
+                                                            <div
                                                                 key={addon.id}
                                                                 className={`
-                                                                flex items-center gap-3 px-3 py-2.5 rounded-xl border cursor-pointer
+                                                                flex items-center gap-3 px-3 py-2.5 rounded-xl border
                                                                 transition-all duration-300
                                                                 ${isSelected
                                                                         ? 'border-brand bg-brand/10 shadow-sm shadow-brand/5'
-                                                                        : 'border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04]'
+                                                                        : 'border-white/[0.06] bg-white/[0.02]'
                                                                     }
-                                                                ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}
                                                             `}
                                                             >
-                                                                {/* Checkbox / Radio indicator */}
-                                                                <div className={`
-                                                                w-[18px] h-[18px] shrink-0 flex items-center justify-center
-                                                                transition-all duration-300 border-2
-                                                                ${group.selection_type === 'single' ? 'rounded-full' : 'rounded-md'}
-                                                                ${isSelected
-                                                                        ? 'bg-brand border-brand'
-                                                                        : 'border-zinc-500 bg-transparent'
-                                                                    }
-                                                            `}>
-                                                                    {isSelected && (
-                                                                        group.selection_type === 'single'
-                                                                            ? <div className="w-1.5 h-1.5 rounded-full bg-white" />
-                                                                            : <FaCheck size={9} className="text-white" />
-                                                                    )}
-                                                                </div>
-
                                                                 {addon.addon_item?.image && (
                                                                     <Img src={addon.addon_item.image} alt="" className="w-8 h-8 rounded-lg object-cover bg-zinc-700 shrink-0" />
                                                                 )}
 
                                                                 <div className="flex-1 min-w-0">
                                                                     <p className={`text-sm font-medium truncate ${isSelected ? 'text-white' : 'text-zinc-300'}`}>{addon.addon_item?.name}</p>
+                                                                    <span className={`text-[11px] whitespace-nowrap font-medium ${isSelected ? 'text-brand' : 'text-zinc-500'}`}>
+                                                                        {symbol} {addonPrice} each
+                                                                    </span>
                                                                 </div>
 
-                                                                <span className={`text-xs whitespace-nowrap font-medium ${isSelected ? 'text-brand' : 'text-zinc-400'}`}>
-                                                                    + {symbol} {(() => {
-                                                                        let price = parseFloat(addon.price);
-                                                                        if (!price || price === 0) price = parseFloat(addon.addon_item?.price) || 0;
-                                                                        return price;
-                                                                    })()}
-                                                                </span>
-
-                                                                <input
-                                                                    type={group.selection_type === 'single' ? 'radio' : 'checkbox'}
-                                                                    name={`group-${group.id}`}
-                                                                    checked={isSelected}
-                                                                    onChange={() => !isDisabled && handleAddonChange(group, addon.id)}
-                                                                    disabled={isDisabled}
-                                                                    hidden
-                                                                />
-                                                            </label>
+                                                                <div className="flex items-center bg-white/[0.05] border border-white/[0.08] rounded-lg shrink-0">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => handleAddonChange(group, addon.id, -1)}
+                                                                        disabled={addonQty <= 0}
+                                                                        className="w-7 h-7 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] rounded-l-lg transition-all duration-300 cursor-pointer disabled:opacity-30"
+                                                                    >
+                                                                        <FaMinus size={8} />
+                                                                    </button>
+                                                                    <span className="w-6 text-center text-xs font-bold text-white select-none">{addonQty}</span>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => handleAddonChange(group, addon.id, 1)}
+                                                                        disabled={isMaxReached && !isSelected}
+                                                                        className="w-7 h-7 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.06] rounded-r-lg transition-all duration-300 cursor-pointer disabled:opacity-30"
+                                                                    >
+                                                                        <FaPlus size={8} />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
                                                         )
                                                     })}
                                                 </div>

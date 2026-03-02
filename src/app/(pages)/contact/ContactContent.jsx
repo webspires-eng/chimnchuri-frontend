@@ -24,25 +24,11 @@ const ContactContent = () => {
 
     const contactInfo = [
         {
-            icon: <FaPhoneAlt />,
-            label: "Phone",
-            value: setting?.phone,
-            subValue: "",
-            link: `tel:${setting?.phone}`
-        },
-        {
             icon: <FaEnvelope />,
             label: "Email",
             value: setting?.email,
             subValue: "",
             link: `mailto:${setting?.email}`
-        },
-        {
-            icon: <FaMapMarkerAlt />,
-            label: "Location",
-            value: `${setting?.address}, ${setting?.city}, ${setting?.state} ${setting?.postcode}`,
-            subValue: "",
-            link: `https://maps.google.com/?q=${setting?.address}`
         }
     ];
 
@@ -146,7 +132,6 @@ const ContactContent = () => {
                                             className="w-full bg-white/[0.05] border border-white/10 focus:border-brand rounded-xl p-4 outline-none text-white text-sm transition-all appearance-none cursor-pointer backdrop-blur-sm"
                                         >
                                             <option value="General Inquiry" className="bg-[#1a1a1a]">General Inquiry</option>
-                                            <option value="Reservation" className="bg-[#1a1a1a]">Table Reservation</option>
                                             <option value="Feedback" className="bg-[#1a1a1a]">Feedback</option>
                                             <option value="Partnership" className="bg-[#1a1a1a]">Partnership</option>
                                         </select>

@@ -125,7 +125,7 @@ const AboutContent = () => {
                     <div className="relative z-10">
                         <h2 className="text-2xl md:text-4xl font-black mb-8 leading-tight">Ready to taste <br /> the <span className="text-brand underline decoration-brand/30 underline-offset-8">Difference</span>?</h2>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a href="https://www.chimnchurri.com/categories/1" className="px-8 py-4 bg-brand hover:bg-green-700 text-white rounded-xl font-bold transition-all shadow-xl shadow-brand/20 text-md w-full sm:w-auto uppercase tracking-wide">
+                            <a href="/categories/1" className="px-8 py-4 bg-brand hover:bg-green-700 text-white rounded-xl font-bold transition-all shadow-xl shadow-brand/20 text-md w-full sm:w-auto uppercase tracking-wide">
                                 Explore Menu
                             </a>
                             <Link href="/contact" className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold transition-all text-md w-full sm:w-auto uppercase tracking-wide">

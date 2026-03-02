@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { FaLinkedin, FaTwitter, FaInstagram, FaEnvelope, FaUsers, FaArrowRight } from 'react-icons/fa';
+import React, { useEffect, useState, useCallback } from 'react';
+import { FaLinkedin, FaTwitter, FaInstagram, FaEnvelope, FaUsers, FaArrowRight, FaTimes } from 'react-icons/fa';
 import Link from 'next/link';
 import { fetchTeamApi } from '@/lib/api';
 
-const TeamMemberCard = ({ member }) => (
-    <div className="group relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-2">
+const TeamMemberCard = ({ member, onClick }) => (
+    <div
+        className="group relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-2 cursor-pointer"
+        onClick={() => onClick(member)}
+    >
         {/* Profile Image Container */}
         <div className="aspect-[4/5] relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent opacity-60 z-10" />
@@ -15,6 +18,12 @@ const TeamMemberCard = ({ member }) => (
                 alt={member.name}
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
             />
+            {/* Hover hint */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0">
+                <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-full border border-white/10">
+                    View Profile
+                </span>
+            </div>
         </div>
 
         {/* Info Area */}
@@ -28,13 +37,15 @@ const TeamMemberCard = ({ member }) => (
                 </h3>
             </div>
 
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6 line-clamp-2">
+            <p className="text-zinc-400 text-sm leading-relaxed mb-4 line-clamp-2">
                 {member.bio}
             </p>
 
-            <Link href={`mailto:${member.email}`} className="inline-flex items-center gap-2 text-white/60 hover:text-brand text-xs font-bold transition-colors group/link">
-                <FaEnvelope className="group-hover/link:animate-bounce" /> {member.email}
-            </Link>
+            {member.email && (
+                <Link href={`mailto:${member.email}`} onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-2 text-white/60 hover:text-brand text-xs font-bold transition-colors group/link">
+                    <FaEnvelope className="group-hover/link:animate-bounce" /> {member.email}
+                </Link>
+            )}
         </div>
 
         {/* Decorative background blur */}
@@ -42,9 +53,116 @@ const TeamMemberCard = ({ member }) => (
     </div>
 );
 
+const TeamMemberModal = ({ member, onClose }) => {
+    // Close on Escape key
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.body.style.overflow = '';
+        };
+    }, [onClose]);
+
+    if (!member) return null;
+
+    return (
+        <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6"
+            onClick={onClose}
+        >
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-xl animate-fadeIn" />
+
+            {/* Modal */}
+            <div
+                className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-[2.5rem] bg-[#1a1a1a] border border-white/10 shadow-2xl shadow-black/60 animate-scaleIn"
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* Close Button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 sm:top-6 sm:right-6 z-30 w-10 h-10 flex items-center justify-center rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                >
+                    <FaTimes size={14} />
+                </button>
+
+                {/* Top Section: Image + Name */}
+                <div className="relative">
+                    {/* Large Image */}
+                    <div className="h-64 sm:h-80 md:h-96 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-[#1a1a1a]/40 to-transparent z-10" />
+                        <img
+                            src={member.image}
+                            alt={member.name}
+                            className="w-full h-full object-cover object-top"
+                        />
+                    </div>
+
+                    {/* Name overlay at bottom of image */}
+                    <div className="absolute bottom-0 left-0 right-0 z-20 px-6 sm:px-10 pb-6">
+                        <span className="text-brand text-[11px] font-bold uppercase tracking-[0.2em] block mb-1">
+                            {member.role}
+                        </span>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
+                            {member.name}
+                        </h2>
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="px-6 sm:px-10 py-6 sm:py-8 space-y-6">
+                    {/* Bio */}
+                    {member.bio && (
+                        <div>
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">About</h4>
+                            <p className="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                                {member.bio}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Description */}
+                    {member.description && (
+                        <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 sm:p-6">
+                            <p className="text-zinc-400 text-sm leading-relaxed">
+                                {member.description}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Contact */}
+                    {member.email && (
+                        <div className="pt-4 border-t border-white/5">
+                            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">Contact</h4>
+                            <Link
+                                href={`mailto:${member.email}`}
+                                className="inline-flex items-center gap-3 bg-white/[0.03] hover:bg-brand/10 border border-white/10 hover:border-brand/30 px-5 py-3 rounded-xl transition-all duration-300 group/email"
+                            >
+                                <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center group-hover/email:bg-brand/20 transition-colors">
+                                    <FaEnvelope className="text-brand" size={12} />
+                                </div>
+                                <span className="text-sm font-medium text-zinc-300 group-hover/email:text-white transition-colors">{member.email}</span>
+                            </Link>
+                        </div>
+                    )}
+                </div>
+
+                {/* Decorative blurs */}
+                <div className="absolute top-20 -left-20 w-40 h-40 bg-brand/10 blur-[80px] rounded-full pointer-events-none" />
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-brand/5 blur-[60px] rounded-full pointer-events-none" />
+            </div>
+        </div>
+    );
+};
+
 const TeamContent = () => {
     const [teamMembers, setTeamMembers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedMember, setSelectedMember] = useState(null);
 
     useEffect(() => {
         const getTeamMembers = async () => {
@@ -98,7 +216,7 @@ const TeamContent = () => {
                     ) : teamMembers.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {teamMembers.map((member, index) => (
-                                <TeamMemberCard key={index} member={member} />
+                                <TeamMemberCard key={index} member={member} onClick={setSelectedMember} />
                             ))}
                         </div>
                     ) : (
@@ -155,6 +273,11 @@ const TeamContent = () => {
                     </div>
                 </div>
             </section>
+
+            {/* Team Member Modal */}
+            {selectedMember && (
+                <TeamMemberModal member={selectedMember} onClose={() => setSelectedMember(null)} />
+            )}
         </main>
     );
 };
