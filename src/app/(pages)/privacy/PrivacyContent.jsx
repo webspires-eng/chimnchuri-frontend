@@ -1,9 +1,13 @@
 'use client';
 
+import { useSettings } from '@/app/providers/SettingsProvider';
 import React from 'react';
 import { FaUserShield, FaLock, FaEye, FaCookieBite, FaShieldAlt } from 'react-icons/fa';
 
 const PrivacyContent = () => {
+
+    const setting = useSettings();
+
     return (
         <main className="min-h-screen bg-[#141414] text-white pt-32 pb-20 px-4 relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none">
@@ -60,7 +64,7 @@ const PrivacyContent = () => {
 
                     <div className="p-8 rounded-3xl bg-brand/5 border border-brand/10 text-center">
                         <p className="text-zinc-300 text-sm">
-                            Need more details? Reach us at <a href="mailto:info@chimnchurri.com" className="text-brand hover:underline font-bold">info@chimnchurri.com</a>
+                            Need more details? Reach us at <a href={`mailto:${setting?.email}`} className="text-brand hover:underline font-bold">{setting?.email}</a>
                         </p>
                     </div>
                 </div>

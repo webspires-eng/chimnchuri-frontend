@@ -639,6 +639,16 @@ export default function CheckoutPage() {
 
                                     </div>
                                     {allocatedTotal !== totalCartQty && <p className="text-[12px] text-red-400 font-medium">* Total items ({totalCartQty}) must be fully allocated.</p>}
+
+                                    <div className="bg-blue-400/5 border border-blue-500/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
+                                        <p className="text-[9px] sm:text-[11px] text-white/80 leading-relaxed">
+                                            <span className="">💬 Need more than 5 steaks in one slot?</span>{' '}
+                                            DM us on{' '}
+                                            <a href="https://www.instagram.com/chimnchurri" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-bold underline underline-offset-2">Instagram</a>{' '}or{' '}
+                                            <a href="https://www.tiktok.com/@chimnchurri" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-bold underline underline-offset-2">TikTok</a>{' '}
+                                            <span className="font-semibold">@chimnchurri</span> to arrange a larger order.
+                                        </p>
+                                    </div>
                                 </div>
 
                                 <div className="md:col-span-2 space-y-1">
@@ -654,6 +664,9 @@ export default function CheckoutPage() {
                                         <p className="text-[10px] sm:text-xs text-yellow-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">⚠️ Allergens Notice</p>
                                         <p className="text-[9px] sm:text-[11px] text-yellow-300/80 leading-relaxed">Our food may contain or come into contact with common allergens such as nuts, gluten, dairy, eggs, soy, and shellfish. Please inform us of any allergies before placing your order.</p>
                                     </div>
+
+
+
                                 </div>
                             </div>
                         </section>

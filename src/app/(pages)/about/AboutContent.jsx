@@ -19,8 +19,7 @@ const AboutContent = () => {
                         About <span className="text-brand">Us</span>
                     </h1>
                     <p className="max-w-2xl mx-auto text-zinc-400 text-base md:text-lg leading-relaxed text-zinc-400/80">
-                        Chim &apos;N&apos; Churri was created to bring premium, flavour-packed steak and sides to Oldham
-                        and the wider North West — food made with care, quality, and attention to detail.
+                        At Chim ‘N’ Churri, we don’t just cook — we perfect. Every steak, side, and sauce is carefully crafted with quality ingredients, bold seasoning, and an uncompromising standard.
                     </p>
                 </div>
             </section>
@@ -78,6 +77,9 @@ const AboutContent = () => {
                             </div>
                         </div>
                     </div>
+
+
+
 
                     {/* Commitment */}
                     <div className="text-center space-y-6 max-w-2xl mx-auto">
