@@ -267,26 +267,30 @@ export default function CheckoutPage() {
         const formData = buildFormData(data);
 
         setLoading(true);
-        if (paymentMethod === "cod") {
-            const response = await createOrder(formData);
-            if (response.success) {
-                dispatch(clearCart());
-                toast.success("Order placed successfully");
-                router.push(`/thank-you?id=${response.orderId}`);
-                return;
+        try {
+            if (paymentMethod === "cod") {
+                const response = await createOrder(formData);
+                if (response?.success) {
+                    dispatch(clearCart());
+                    toast.success("Order placed successfully");
+                    router.push(`/thank-you?id=${response.orderId}`);
+                    return;
+                }
             }
-        }
 
-        if (paymentMethod === "online") {
-            const response = await checkoutFormRef.current?.submitPayment(formData);
-            if (response.success) {
-                dispatch(clearCart());
-                toast.success("Order placed successfully");
-                router.push(`/thank-you?id=${response.orderId}`);
-                return;
+            if (paymentMethod === "online") {
+                const response = await checkoutFormRef.current?.submitPayment(formData);
+                if (response?.success) {
+                    dispatch(clearCart());
+                    toast.success("Order placed successfully");
+                    router.push(`/thank-you?id=${response.orderId}`);
+                    return;
+                }
             }
+            toast.error("Something went wrong");
+        } catch (error) {
+            toast.error(error?.message || "Something went wrong. Please try again.");
         }
-        toast.error("Something went wrong");
         setLoading(false);
     };
 

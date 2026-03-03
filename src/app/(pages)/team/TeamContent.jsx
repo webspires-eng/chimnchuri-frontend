@@ -5,6 +5,12 @@ import { FaLinkedin, FaTwitter, FaInstagram, FaEnvelope, FaUsers, FaArrowRight, 
 import Link from 'next/link';
 import { fetchTeamApi } from '@/lib/api';
 
+// Helper to strip HTML tags for plain-text previews
+const stripHtml = (html) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+};
+
 const TeamMemberCard = ({ member, onClick }) => (
     <div
         className="group relative bg-white/[0.03] border border-white/10 rounded-[2.5rem] overflow-hidden hover:bg-white/[0.06] transition-all duration-500 hover:-translate-y-2 cursor-pointer"
@@ -38,7 +44,7 @@ const TeamMemberCard = ({ member, onClick }) => (
             </div>
 
             <p className="text-zinc-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                {member.bio}
+                {stripHtml(member.bio)}
             </p>
 
             {member.email && (
@@ -79,7 +85,7 @@ const TeamMemberModal = ({ member, onClose }) => {
 
             {/* Modal */}
             <div
-                className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-[2.5rem] bg-[#1a1a1a] border border-white/10 shadow-2xl shadow-black/60 animate-scaleIn"
+                className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-x-clip overflow-y-auto rounded-3xl sm:rounded-[2.5rem] bg-[#1a1a1a] border border-white/10 shadow-2xl shadow-black/60 animate-scaleIn"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Close Button */}
@@ -119,20 +125,13 @@ const TeamMemberModal = ({ member, onClose }) => {
                     {member.bio && (
                         <div>
                             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500 mb-3">About</h4>
-                            <p className="text-zinc-300 text-sm sm:text-base leading-relaxed">
-                                {member.bio}
-                            </p>
+                            <div
+                                className="text-zinc-300 text-xs leading-relaxed prose prose-invert prose-sm max-w-none"
+                                dangerouslySetInnerHTML={{ __html: member.bio }}
+                            />
                         </div>
                     )}
 
-                    {/* Description */}
-                    {member.description && (
-                        <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 sm:p-6">
-                            <p className="text-zinc-400 text-sm leading-relaxed">
-                                {member.description}
-                            </p>
-                        </div>
-                    )}
 
                     {/* Contact */}
                     {member.email && (
@@ -214,7 +213,7 @@ const TeamContent = () => {
                             ))}
                         </div>
                     ) : teamMembers.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {teamMembers.map((member, index) => (
                                 <TeamMemberCard key={index} member={member} onClick={setSelectedMember} />
                             ))}

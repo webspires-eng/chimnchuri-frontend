@@ -26,22 +26,21 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
     const [prAvailable, setPrAvailable] = useState(false);
     const [showCardFields, setShowCardFields] = useState(false);
 
-    // ✅ FIX: Use refs to always hold the latest props — prevents stale closure bug
+    // Use refs to always hold the latest props — prevents stale closure bug
     const getFormDataRef = useRef(getFormData);
     const onSuccessRef = useRef(onSuccess);
 
-    // Keep refs in sync with latest props on every render
-    useEffect(() => {
-        getFormDataRef.current = getFormData;
-    }, [getFormData]);
-
-    useEffect(() => {
-        onSuccessRef.current = onSuccess;
-    }, [onSuccess]);
+    useEffect(() => { getFormDataRef.current = getFormData; }, [getFormData]);
+    useEffect(() => { onSuccessRef.current = onSuccess; }, [onSuccess]);
 
     // Initialize Payment Request (Google Pay / Apple Pay)
     useEffect(() => {
         if (!stripe || !amount) return;
+
+        // ✅ FIX: Reset both states before creating a new PaymentRequest
+        // This prevents rendering the button before canMakePayment() resolves
+        setPrAvailable(false);
+        setPaymentRequest(null);
 
         const pr = stripe.paymentRequest({
             country: "GB",
@@ -54,29 +53,29 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
             requestPayerEmail: true,
         });
 
-        pr.canMakePayment().then((result) => {
-            if (result) {
-                setPrAvailable(true);
-            }
-        });
-
-        // Handle GPay / Apple Pay payment
+        // Handle GPay / Apple Pay payment — register event BEFORE canMakePayment
         pr.on("paymentmethod", async (ev) => {
             try {
-                // ✅ FIX: Use ref to get LATEST form data (not stale closure)
                 const formData = getFormDataRef.current?.();
                 if (!formData) {
                     ev.complete("fail");
-                    // getFormData already shows specific toast errors, no need for generic one
                     return;
                 }
 
                 // 1. Create order + PaymentIntent on server
-                const response = await createOrder({
-                    ...formData,
-                    items: items,
-                    amount: totalPrice,
-                });
+                let response;
+                try {
+                    response = await createOrder({
+                        ...formData,
+                        items: items,
+                        amount: totalPrice,
+                    });
+                } catch (apiError) {
+                    ev.complete("fail");
+                    setMessage(apiError?.message || "Failed to create order. Please try again.");
+                    toast.error(apiError?.message || "Failed to create order.");
+                    return;
+                }
 
                 if (!response?.clientSecret) {
                     ev.complete("fail");
@@ -108,7 +107,6 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
                 }
 
                 ev.complete("success");
-                // ✅ FIX: Use ref to get LATEST onSuccess callback
                 onSuccessRef.current?.(response);
             } catch (err) {
                 ev.complete("fail");
@@ -116,7 +114,18 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
             }
         });
 
-        setPaymentRequest(pr);
+        // ✅ FIX: Only set paymentRequest AFTER canMakePayment confirms availability
+        // This ensures PaymentRequestButtonElement never mounts before canMakePayment resolves
+        pr.canMakePayment().then((result) => {
+            if (result) {
+                setPaymentRequest(pr);
+                setPrAvailable(true);
+            }
+        }).catch(() => {
+            // Silently ignore — GPay just won't be available
+        });
+
+        // Cleanup: no need to set paymentRequest here
     }, [stripe, amount]);
 
     // Called for standard card payments
@@ -132,6 +141,12 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
                 items: items,
                 amount: totalPrice,
             });
+
+            if (!response?.clientSecret) {
+                setMessage("Failed to create payment.");
+                setLoading(false);
+                return false;
+            }
 
             const result = await stripe.confirmCardPayment(response.clientSecret, {
                 payment_method: {
@@ -149,7 +164,7 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
             setLoading(false);
             return response;
         } catch (error) {
-            setMessage("Payment failed. Please try again.");
+            setMessage(error?.message || "Payment failed. Please try again.");
             setLoading(false);
             return false;
         }
