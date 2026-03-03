@@ -75,9 +75,10 @@ export default function CheckoutPage() {
 
 
     const { items } = useSelector((state) => state.cartSlice);
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue, getValues, trigger } = useForm();
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const checkoutFormRef = useRef(null);
+    const [isUsingCardPayment, setIsUsingCardPayment] = useState(false); // tracks if user toggled to card in CheckoutForm
 
     // Reset allocations and delivery zone when order type changes
     useEffect(() => {
@@ -158,6 +159,75 @@ export default function CheckoutPage() {
         }
     };
 
+    // Build the form data object (shared between card, wallet, and COD)
+    const buildFormData = (data) => {
+        const user_id = auth?.user?.id || null;
+        const effectiveDeliveryFee = orderType === "collection" ? 0 : (deliveryZone ? deliveryZone.delivery_fee : deliveryFee);
+        const effectiveGrandTotal = totalPrice + effectiveDeliveryFee + taxAmount - discount;
+        return {
+            ...data,
+            payment_method: paymentMethod,
+            order_type: orderType,
+            user_id,
+            items: items,
+            discount: discount,
+            tax: taxAmount,
+            delivery_fee: effectiveDeliveryFee,
+            amount: effectiveGrandTotal,
+            allocations: Object.entries(allocations)
+                .filter(([_, qty]) => qty > 0)
+                .map(([slotId, qty]) => ({ slot_id: slotId, quantity: qty }))
+        };
+    };
+
+    // Validates and returns form data — used by GPay/Apple Pay button
+    const getFormDataForWallet = () => {
+        // Validate delivery zone
+        if (orderType === 'delivery' && !deliveryChecked) {
+            toast.error("Please verify your delivery postcode first");
+            return null;
+        }
+        if (orderType === 'delivery' && isOutOfRange) {
+            toast.error("Sorry, we cannot deliver to your area");
+            return null;
+        }
+        const effectiveMinOrder = orderType === 'delivery' && deliveryZone ? deliveryZone.minimum_order_amount : minOrderAmount;
+        if (totalPrice < effectiveMinOrder) {
+            toast.error(`Minimum order amount is ${symbol}${effectiveMinOrder.toFixed(2)}`);
+            return null;
+        }
+        if (allocatedTotal !== totalCartQty) {
+            toast.error(`Please allocate all ${totalCartQty} items to time slots. Currently allocated: ${allocatedTotal}`);
+            return null;
+        }
+        if (timeSlots?.length === 0) {
+            toast.error("No time slots available");
+            return null;
+        }
+
+        // Get current form values without triggering HTML validation
+        const data = getValues();
+        if (!data.full_name || !data.email) {
+            toast.error("Please fill in your name and email");
+            return null;
+        }
+        if (orderType === 'delivery' && !data.street_address) {
+            toast.error("Please fill in your street address");
+            return null;
+        }
+
+        return buildFormData({ ...data, payment_method: "online" });
+    };
+
+    // Called when GPay/Apple Pay payment succeeds
+    const onWalletPaymentSuccess = (response) => {
+        if (response?.success) {
+            dispatch(clearCart());
+            toast.success("Order placed successfully");
+            router.push(`/thank-you?id=${response.orderId}`);
+        }
+    };
+
     const handlePlaceOrder = async (data) => {
 
         // Check delivery zone for delivery orders
@@ -194,27 +264,7 @@ export default function CheckoutPage() {
             return;
         }
 
-
-        const user_id = auth?.user?.id || null;
-        const effectiveDeliveryFee = orderType === "collection" ? 0 : (deliveryZone ? deliveryZone.delivery_fee : deliveryFee);
-        const effectiveGrandTotal = totalPrice + effectiveDeliveryFee + taxAmount - discount;
-        const formData = {
-            ...data,
-            payment_method: paymentMethod,
-            order_type: orderType,
-            user_id,
-            items: items,
-            discount: discount,
-            tax: taxAmount,
-            delivery_fee: effectiveDeliveryFee,
-            amount: effectiveGrandTotal,
-            allocations: Object.entries(allocations)
-                .filter(([_, qty]) => qty > 0)
-                .map(([slotId, qty]) => ({ slot_id: slotId, quantity: qty }))
-        };
-
-        // console.log(formData);
-        // return;
+        const formData = buildFormData(data);
 
         setLoading(true);
         if (paymentMethod === "cod") {
@@ -678,6 +728,9 @@ export default function CheckoutPage() {
                                         <CheckoutForm
                                             ref={checkoutFormRef}
                                             amount={grandTotal}
+                                            getFormData={getFormDataForWallet}
+                                            onSuccess={onWalletPaymentSuccess}
+                                            onCardToggle={setIsUsingCardPayment}
                                         />
                                     </Elements>
                                 </div>
@@ -685,7 +738,12 @@ export default function CheckoutPage() {
 
 
 
-                            {isCodEnabled || !!isOnlineEnabled ? (
+                            {/* Show Place Order for COD or Card mode. Hide when GPay mode is active. */}
+                            {paymentMethod === "online" && !isUsingCardPayment ? (
+                                <p className="text-center text-[10px] sm:text-xs text-zinc-500 py-2">
+                                    Tap the payment button above to complete your order, or switch to card
+                                </p>
+                            ) : isCodEnabled || !!isOnlineEnabled ? (
                                 <button
                                     onClick={handleSubmit(handlePlaceOrder, onFormError)}
                                     disabled={loading}
@@ -699,14 +757,14 @@ export default function CheckoutPage() {
                                 </button>
                             ) : (
                                 <button
-                                    onClick={() => taost.error("No Payment method are available!")}
+                                    onClick={() => toast.error("No Payment methods are available!")}
                                     disabled={allocatedTotal !== totalCartQty}
                                     className={`group w-full flex items-center justify-center gap-3 py-4.5 font-bold rounded-2xl transition-all duration-300 cursor-pointer
                                     ${allocatedTotal === totalCartQty
                                             ? 'bg-brand hover:bg-green-700 text-white shadow-lg shadow-brand/20'
                                             : 'bg-white/5 text-zinc-500 cursor-not-allowed border border-white/5'}`}
                                 >
-                                    No Payment method are available!
+                                    No Payment methods are available!
                                 </button>
                             )
                             }
