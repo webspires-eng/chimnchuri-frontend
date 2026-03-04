@@ -605,7 +605,7 @@ export default function CheckoutPage() {
                                                 <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-1 px-2 sm:px-2 rounded-sm sm:rounded-lg border transition-all ${slot.disabled ? 'opacity-50 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
                                                     <div className="flex-1">
                                                         <div className="text-xs sm:text-sm font-bold text-white">{slot.start_time}</div>
-                                                        <div className="text-[9px] sm:text-[10px] text-zinc-300 uppercase tracking-widest mt-0.5">{slot.max_capacity} {slot.max_capacity === 1 ? 'steak' : 'steaks'} left</div>
+                                                        <div className="text-[9px] sm:text-[10px] text-zinc-300 uppercase tracking-widest mt-0.5">{slot.max_capacity - (allocations[slot.id] || 0)} {(slot.max_capacity - (allocations[slot.id] || 0)) === 1 ? 'steak' : 'steaks'} left</div>
                                                     </div>
                                                     <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl overflow-hidden shadow-inner">
                                                         <button

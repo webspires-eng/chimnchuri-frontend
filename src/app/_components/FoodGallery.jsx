@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { motion } from "framer-motion";
 
 const images = [
     "/gallery/1.jpeg",
@@ -10,26 +9,32 @@ const images = [
 ];
 
 // Duplicate images twice for a seamless infinite loop
-const marqueeImages = [...images, ...images];
+const marqueeImages = [...images, ...images, ...images];
 
 const FoodGallery = () => {
     return (
         <section className="w-full overflow-hidden">
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @keyframes marqueeScroll {
+                    0% {
+                        transform: translateX(0) translateZ(0);
+                    }
+                    100% {
+                        transform: translateX(-50%) translateZ(0);
+                    }
+                }
+                .marquee-track {
+                    display: flex;
+                    width: max-content;
+                    animation: marqueeScroll 50s linear infinite;
+                    will-change: transform;
+                    backface-visibility: hidden;
+                    -webkit-backface-visibility: hidden;
+                }
+            `}} />
             <div className="w-full">
-                <motion.div
-                    className="flex"
-                    animate={{
-                        x: ["0%", "-50%"],
-                    }}
-                    transition={{
-                        x: {
-                            duration: 20,
-                            repeat: Infinity,
-                            ease: "linear",
-                        },
-                    }}
-                    style={{ width: "max-content" }}
-                >
+                <div className="marquee-track">
                     {marqueeImages.map((src, i) => (
                         <div
                             key={i}
@@ -43,7 +48,7 @@ const FoodGallery = () => {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </div>
                     ))}
-                </motion.div>
+                </div>
             </div>
         </section>
     );

@@ -173,8 +173,10 @@ export default function MenuSection() {
           const knife = knifeRef.current;
           if (knife) {
             knife.style.animation = "none";
-            knife.offsetHeight; // trigger reflow
-            knife.style.animation = "";
+            // Use rAF instead of forced reflow (offsetHeight) to reset animation
+            requestAnimationFrame(() => {
+              knife.style.animation = "";
+            });
           }
         }
       },
@@ -185,20 +187,27 @@ export default function MenuSection() {
     return () => observer.disconnect();
   }, []);
 
-  /* Subtle parallax on hero mouse-move */
+  /* Subtle parallax on hero mouse-move — throttled to 60fps via rAF */
   useEffect(() => {
     const hero = heroRef.current;
     const glow = plateGlowRef.current;
     if (!hero || !glow) return;
 
+    let ticking = false;
+
     const handleMove = (e) => {
-      const rect = hero.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
-      const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
-      glow.style.transform = `translate(${x}px, ${y}px)`;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const rect = hero.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 20;
+        glow.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        ticking = false;
+      });
     };
 
-    hero.addEventListener("mousemove", handleMove);
+    hero.addEventListener("mousemove", handleMove, { passive: true });
     return () => hero.removeEventListener("mousemove", handleMove);
   }, []);
 
@@ -248,13 +257,15 @@ export default function MenuSection() {
               rgba(201, 169, 110, 0.06) 0%,
               rgba(201, 169, 110, 0.02) 40%,
               transparent 70%);
-          transition: all 0.8s ease;
+          transition: transform 0.8s ease, background 0.8s ease;
+          will-change: transform;
+          transform: translateZ(0);
+          backface-visibility: hidden;
           z-index: 0;
         }
 
         .is-open .plate-glow {
-          width: 550px;
-          height: 550px;
+          transform: scale(1.45) translateZ(0);
           background: radial-gradient(circle,
               rgba(201, 169, 110, 0.1) 0%,
               rgba(139, 32, 32, 0.05) 40%,
@@ -288,6 +299,9 @@ export default function MenuSection() {
           border-radius: 50%;
           animation: steamWisp 3s ease-in-out var(--delay) infinite;
           filter: blur(2px);
+          will-change: transform, opacity;
+          transform: translateZ(0);
+          backface-visibility: hidden;
         }
 
         @keyframes steamWisp {
@@ -298,12 +312,14 @@ export default function MenuSection() {
 
         .knife {
           position: absolute;
-          top: -80px;
+          top: 0;
           left: 50%;
-          transform: translateX(-50%);
+          transform: translate3d(-50%, -80px, 0);
           z-index: 30;
           opacity: 0;
           pointer-events: none;
+          will-change: transform, opacity;
+          backface-visibility: hidden;
         }
 
         .knife-svg {
@@ -317,12 +333,12 @@ export default function MenuSection() {
         }
 
         @keyframes knifeSlice {
-          0% { top: -80px; opacity: 0; transform: translateX(-50%) rotate(0deg); }
-          30% { top: -20px; opacity: 1; transform: translateX(-50%) rotate(0deg); }
-          50% { top: -20px; transform: translateX(-50%) rotate(0deg); }
-          75% { top: 110%; transform: translateX(-50%) rotate(0deg); }
+          0% { opacity: 0; transform: translate3d(-50%, -80px, 0); }
+          30% { opacity: 1; transform: translate3d(-50%, -20px, 0); }
+          50% { transform: translate3d(-50%, -20px, 0); }
+          75% { transform: translate3d(-50%, calc(100vh + 80px), 0); }
           85% { opacity: 1; }
-          100% { top: 120%; opacity: 0; transform: translateX(-50%) rotate(0deg); }
+          100% { opacity: 0; transform: translate3d(-50%, calc(100vh + 120px), 0); }
         }
 
         .steak-container {
@@ -354,6 +370,9 @@ export default function MenuSection() {
           inset: 0;
           transition: transform 0.7s var(--transition-smooth), clip-path 0.5s var(--transition-ease);
           overflow: hidden;
+          will-change: transform;
+          transform: translateZ(0);
+          backface-visibility: hidden;
         }
 
         /* Horizontal bands: top / middle / bottom */
@@ -378,10 +397,12 @@ export default function MenuSection() {
           justify-content: center;
           gap: 8px;
           opacity: 0;
-          transform: translateY(20px);
+          transform: translate3d(0, 20px, 0);
           transition: opacity 0.4s ease, transform 0.5s var(--transition-ease);
           pointer-events: none;
           z-index: 5;
+          will-change: transform, opacity;
+          backface-visibility: hidden;
         }
 
         .is-open .slice-1 .card-label{
@@ -444,6 +465,9 @@ export default function MenuSection() {
           z-index: 20;
           pointer-events: none;
           filter: blur(0.5px);
+          will-change: transform, opacity;
+          transform: translateZ(0);
+          backface-visibility: hidden;
         }
 
         .cut-line-1 { top: calc(33.33% - 1px); }
@@ -486,8 +510,7 @@ export default function MenuSection() {
             height: 80vw;
           }
           .is-open .plate-glow {
-            width: 95vw;
-            height: 95vw;
+            transform: scale(1.2) translateZ(0);
           }
         }
 

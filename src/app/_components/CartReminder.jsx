@@ -38,7 +38,7 @@ const CartReminder = () => {
 
     return (
         <div
-            className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[999] w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-md"
+            className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[10] w-[calc(100%-1.5rem)] sm:w-[calc(100%-2rem)] max-w-md"
             style={{
                 animation: "slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
