@@ -333,7 +333,7 @@ export default function CheckoutPage() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
                     {/* Left Column: Forms */}
-                    <div className="lg:col-span-8 space-y-5 sm:space-y-8">
+                    <div className="lg:col-span-8 space-y-5 sm:space-y-8 order-2 lg:order-1">
 
                         {/* 0. Order Type: Delivery / Collection */}
                         <section className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl">
@@ -789,7 +789,7 @@ export default function CheckoutPage() {
                     </div>
 
                     {/* Right Column: Order Summary */}
-                    <aside className="lg:col-span-4 lg:sticky lg:top-8">
+                    <aside className="lg:col-span-4 lg:sticky lg:top-8 order-1 lg:order-2">
                         <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-2 sm:p-3 shadow-2xl">
                             <h2 className="text-base sm:text-xl font-bold mb-5 sm:mb-8 flex items-center gap-2 sm:gap-3">
                                 <FaShoppingBag className="text-white" size={14} />
