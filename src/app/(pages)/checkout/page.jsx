@@ -418,7 +418,19 @@ export default function CheckoutPage() {
                             {
                                 orderType === 'collection' && (
                                     // <p className="text-[10px] sm:text-xs text-zinc-400 mt-3 sm:mt-5">You can collect your order from our store at <span className="text-white">{settings?.address}, {settings?.city}</span> </p>
-                                    <p className="text-[10px] sm:text-xs text-zinc-300 mt-3 sm:mt-5">Based in Chadderton, Oldham (OL9). Exact collection details will be provided in your order confirmation email. At your selected collection time, please remain in your car and we will bring your order directly to your car. </p>
+                                    <p className="text-[10px] sm:text-xs text-zinc-300 mt-3 sm:mt-5">
+                                        Based in Chadderton, Oldham (OL9), your order will be ready at your scheduled collection time. It is your responsibility to arrive on time, as food is made fresh. Exact collection details will be provided in your order confirmation email.
+                                        <br /><br />
+                                        Please remain in your car when you arrive. We will bring your order directly to you.
+                                        <br />
+                                        <br />
+
+                                        There may be slight delays on our side, so please be patient. You are responsible for letting us know by texting <a href="tel:+447451221187" className="text-blue-400 font-bold">07451221187</a> with the full name used on your order when you are 5 minutes away.
+                                        <br />
+                                        <br />
+
+                                        If you cannot arrive at your scheduled time, you must text or call <a href="tel:+447451221187" className="text-blue-400 font-bold">07451221187</a> to let us know. Unless there are major delays, all updates will be communicated by us via text or call to <a href="tel:+447451221187" className="text-blue-400 font-bold">07451221187</a>.
+                                    </p>
 
                                 )
                             }
