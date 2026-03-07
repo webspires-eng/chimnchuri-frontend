@@ -1,14 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { timeSlots } from "../lib/api"
 
-const useTimeSlots = (orderType) => {
+const useTimeSlots = (orderDateId) => {
 
-    const { data, isLoading, error } = useQuery({
-        queryKey: ["timeSlots", orderType],
-        queryFn: () => timeSlots(orderType),
+    const { data, isLoading, error, refetch } = useQuery({
+        queryKey: ["timeSlots", orderDateId],
+        queryFn: () => timeSlots(orderDateId),
+        enabled: !!orderDateId, // Only fetch when a date is selected
     })
 
-    return { data, isLoading, error }
+    return { data, isLoading, error, refetch }
 }
 
 export default useTimeSlots

@@ -200,7 +200,7 @@ const ItemModal = () => {
                     <div className="sm:flex items-start gap-0">
 
                         {/* IMAGE */}
-                        <div className="sm:w-2/5 shrink-0 relative">
+                        <div className="sm:w-2/5 shrink-0 relative sm:sticky top-0">
                             <div className="aspect-video sm:aspect-[4/5] relative overflow-hidden bg-zinc-800">
                                 {data?.media?.[0]?.original_url ? (
                                     <Img
@@ -320,7 +320,7 @@ const ItemModal = () => {
                                                     <p className="text-xs text-red-400 mb-2">⚠ {group.selection_type === 'single' ? `Please select a ${group.addon_category?.name || 'option'}` : `Select 0 or at least ${minQty} item(s)`}</p>
                                                 )}
 
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                                                <div className={`grid gap-1.5 sm:gap-2 ${group.selection_type === 'single' ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}>
                                                     {group.items?.map((addon) => {
                                                         const addonQty = (groupQtys[addon.id] || 0);
                                                         const isSelected = addonQty > 0;
@@ -332,25 +332,34 @@ const ItemModal = () => {
                                                         if (!addonPrice || addonPrice === 0) addonPrice = parseFloat(addon.addon_item?.price) || 0;
 
                                                         return (
-                                                            <label
+                                                            <div
                                                                 key={addon.id}
-                                                                onClick={() => {
-                                                                    if (isSelected) {
-                                                                        handleAddonChange(group, addon.id, -1);
-                                                                    } else if (!isMaxReached || isSingle) {
-                                                                        handleAddonChange(group, addon.id, 1);
-                                                                    }
-                                                                }}
                                                                 className={`
-                                                                    relative flex items-center justify-between px-2 py-2 sm:py-3 capitalize rounded-xl cursor-pointer
+                                                                    relative flex items-center justify-between px-2 py-2 sm:py-3 capitalize rounded-xl
                                                                     transition-all duration-300 border
                                                                     ${isSelected
                                                                         ? 'border-brand bg-brand/10 shadow-sm shadow-brand/10'
-                                                                        : `border-white/[0.06] bg-white/[0.03] ${!isMaxReached || isSingle ? 'hover:border-white/[0.12] hover:bg-white/[0.05]' : 'opacity-50 cursor-not-allowed'}`
+                                                                        : `border-white/[0.06] bg-white/[0.03] ${!isMaxReached || isSingle ? 'hover:border-white/[0.12] hover:bg-white/[0.05]' : 'opacity-50'}`
                                                                     }
                                                                 `}
                                                             >
-                                                                <div className="flex items-center gap-1">
+                                                                <div
+                                                                    className={`flex items-center gap-1 flex-1 min-w-0 ${!isMaxReached || isSingle || isSelected ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                                                                    onClick={() => {
+                                                                        if (isSingle) {
+                                                                            if (isSelected) {
+                                                                                handleAddonChange(group, addon.id, -1);
+                                                                            } else {
+                                                                                handleAddonChange(group, addon.id, 1);
+                                                                            }
+                                                                        } else {
+                                                                            // For multiple: first click adds, subsequent clicks are handled by +/- buttons
+                                                                            if (!isSelected && (!isMaxReached)) {
+                                                                                handleAddonChange(group, addon.id, 1);
+                                                                            }
+                                                                        }
+                                                                    }}
+                                                                >
                                                                     {isSingle ? (
                                                                         <div className={`
                                                                             w-4 h-4 sm:w-[18px] sm:h-[18px] rounded-full border-2 flex items-center justify-center transition-all duration-300 shrink-0
@@ -366,10 +375,42 @@ const ItemModal = () => {
                                                                             {isSelected && <FaCheck className="text-white" size={8} />}
                                                                         </div>
                                                                     )}
-                                                                    <span className={`font-medium text-[11px] sm:text-xs ${isSelected ? 'text-white' : 'text-zinc-300'}`}>{addon.addon_item?.name}</span>
+                                                                    <span className={`font-medium text-[11px] sm:text-xs truncate ${isSelected ? 'text-white' : 'text-zinc-300'}`}>{addon.addon_item?.name}</span>
                                                                 </div>
-                                                                <Price amount={addonPrice} className={`text-[11px] sm:text-xs ${isSelected ? 'text-white' : ''}`} />
-                                                            </label>
+
+                                                                <div className="flex items-center gap-1.5 shrink-0">
+                                                                    {/* Qty controls for multiple-selection addons when selected */}
+                                                                    {!isSingle && isSelected && (
+                                                                        <div className="flex items-center bg-white/[0.06] border border-white/10 rounded-lg overflow-hidden mr-1.5">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    handleAddonChange(group, addon.id, -1);
+                                                                                }}
+                                                                                className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                                                                            >
+                                                                                <FaMinus size={7} />
+                                                                            </button>
+                                                                            <span className="w-5 sm:w-6 text-center text-[11px] sm:text-xs font-bold text-white tabular-nums select-none">{addonQty}</span>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={(e) => {
+                                                                                    e.stopPropagation();
+                                                                                    if (!isMaxReached || addonQty > 0) {
+                                                                                        handleAddonChange(group, addon.id, 1);
+                                                                                    }
+                                                                                }}
+                                                                                disabled={isMaxReached && addonQty === 0}
+                                                                                className="w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                                                                            >
+                                                                                <FaPlus size={7} />
+                                                                            </button>
+                                                                        </div>
+                                                                    )}
+                                                                    <Price amount={addonPrice} className={`text-[11px] sm:text-xs ${isSelected ? 'text-white' : ''}`} />
+                                                                </div>
+                                                            </div>
                                                         );
                                                     })}
                                                 </div>

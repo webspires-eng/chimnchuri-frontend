@@ -2,7 +2,7 @@
 
 import { useSettings } from '@/app/providers/SettingsProvider';
 import React from 'react';
-import { FaFileContract, FaShieldAlt, FaBalanceScale, FaInfoCircle, FaUndoAlt, FaClock, FaEdit, FaStore, FaExclamationTriangle } from 'react-icons/fa';
+import { FaFileContract, FaShieldAlt, FaBalanceScale, FaInfoCircle, FaUndoAlt, FaClock, FaEdit, FaStore, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 
 const TermsContent = () => {
     const setting = useSettings();
@@ -70,6 +70,11 @@ const TermsContent = () => {
                             icon: <FaExclamationTriangle />,
                             title: "9. Allergen & Dietary Notice",
                             content: "Our food may contain or come into contact with common allergens, including but not limited to nuts, peanuts, gluten, dairy, eggs, soy, sesame, and shellfish. All food is prepared in a shared kitchen environment, which means cross-contamination is possible.\n\nIf you have any food allergies, intolerances, or specific dietary requirements, you must inform us before placing your order. While every reasonable precaution is taken to minimise risk, Chim 'N' Churri cannot guarantee that any item is completely free from allergens and accepts no legal responsibility for allergic reactions where prior notice has not been given.\n\nFor any allergen-related enquiries before placing an order, please contact us via direct message on Instagram or TikTok at @chimnchurri, or email info@chimnchurri.com, including your full name, email address, and details of your requirements. These are our preferred methods of contact."
+                        },
+                        {
+                            icon: <FaCheckCircle />,
+                            title: "10. Are We Halal?",
+                            content: "Absolutely. Everything we sell—including our premium meat, is 100% halal and fully certified."
                         }
                     ].map((section, idx) => (
                         <section key={idx} className="bg-white/[0.03] border border-white/10 p-8 rounded-3xl backdrop-blur-sm hover:bg-white/[0.05] transition-all group">

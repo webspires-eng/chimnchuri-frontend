@@ -7,7 +7,7 @@ import CheckoutForm from "./CheckoutForm";
 import { useDispatch, useSelector } from "react-redux";
 import Img from "@/app/_components/Img";
 import { useForm } from "react-hook-form";
-import { FaMapMarkerAlt, FaCreditCard, FaMoneyBillWave, FaShoppingBag, FaShieldAlt, FaArrowRight, FaPlus, FaMinus, FaTruck, FaStore, FaSearch, FaCheckCircle, FaTimesCircle, FaSpinner } from "react-icons/fa";
+import { FaMapMarkerAlt, FaCreditCard, FaMoneyBillWave, FaShoppingBag, FaShieldAlt, FaArrowRight, FaPlus, FaMinus, FaTruck, FaStore, FaSearch, FaCheckCircle, FaTimesCircle, FaSpinner, FaCalendarAlt } from "react-icons/fa";
 import { createOrder } from "@/lib/api";
 import { clearCart } from "@/store/features/cartSlice";
 import { useCurrency, useSettings } from "@/app/providers/SettingsProvider";
@@ -15,13 +15,16 @@ import { toast } from "react-toastify";
 import useCartCalculation from "@/hooks/useCartCalculation";
 import { useRouter } from "next/navigation";
 import useTimeSlots from "@/hooks/useTimeSlots";
+import useOrderDates from "@/hooks/useOrderDates";
 import useDeliveryZone from "@/hooks/useDeliveryZone";
 
 
 export default function CheckoutPage() {
 
     const [orderType, setOrderType] = useState("collection");
-    const { data: timeSlots, isLoading: timeSlotsLoading, error: timeSlotsError } = useTimeSlots('delivery');
+    const [selectedOrderDate, setSelectedOrderDate] = useState(null);
+    const { data: orderDatesData, isLoading: orderDatesLoading } = useOrderDates();
+    const { data: timeSlots, isLoading: timeSlotsLoading, error: timeSlotsError } = useTimeSlots(selectedOrderDate?.id);
     const auth = useSelector((state) => state.authSlice);
 
     // Delivery zone hook
@@ -83,6 +86,7 @@ export default function CheckoutPage() {
     // Reset allocations and delivery zone when order type changes
     useEffect(() => {
         setAllocations({});
+        setSelectedOrderDate(null);
         if (orderType === 'collection') {
             resetDeliveryZone();
             setDeliveryChecked(false);
@@ -149,6 +153,7 @@ export default function CheckoutPage() {
         const errorMessages = [];
         if (formErrors.full_name) errorMessages.push("Full name is required");
         if (formErrors.email) errorMessages.push("Email is required");
+        if (formErrors.car_registration) errorMessages.push("Car registration number is required");
         if (formErrors.street_address) errorMessages.push("Street address is required");
         if (formErrors.city) errorMessages.push("City is required");
 
@@ -168,6 +173,7 @@ export default function CheckoutPage() {
             ...data,
             payment_method: paymentMethod,
             order_type: orderType,
+            order_date: selectedOrderDate?.date || null,
             user_id,
             items: items,
             discount: discount,
@@ -182,6 +188,11 @@ export default function CheckoutPage() {
 
     // Validates and returns form data — used by GPay/Apple Pay button
     const getFormDataForWallet = () => {
+        // Validate order date
+        if (!selectedOrderDate) {
+            toast.error("Please select an order date");
+            return null;
+        }
         // Validate delivery zone
         if (orderType === 'delivery' && !deliveryChecked) {
             toast.error("Please verify your delivery postcode first");
@@ -211,6 +222,10 @@ export default function CheckoutPage() {
             toast.error("Please fill in your name, email, and phone number");
             return null;
         }
+        if (orderType === 'collection' && !data.car_registration) {
+            toast.error("Car registration number is required for collection orders");
+            return null;
+        }
         if (orderType === 'delivery' && !data.street_address) {
             toast.error("Please fill in your street address");
             return null;
@@ -229,6 +244,12 @@ export default function CheckoutPage() {
     };
 
     const handlePlaceOrder = async (data) => {
+
+        // Check order date
+        if (!selectedOrderDate) {
+            toast.error("Please select an order date");
+            return;
+        }
 
         // Check delivery zone for delivery orders
         if (orderType === 'delivery' && !deliveryChecked) {
@@ -382,7 +403,8 @@ export default function CheckoutPage() {
                                     </div>
                                     <div className="text-left">
                                         <div className="font-bold text-[10px] sm:text-xs">Collection - Kerbside Service</div>
-                                        <p className="text-[9px] sm:text-[10px] text-zinc-400">Pick up in store</p>
+                                        {/* <p className="text-[9px] sm:text-[10px] text-zinc-400">Pick up in store</p> */}
+                                        <p className="text-[9px] sm:text-[10px] text-zinc-400">Drop off to your car</p>
                                     </div>
                                     {orderType === 'collection' && (
                                         <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
@@ -395,7 +417,9 @@ export default function CheckoutPage() {
                             </div>
                             {
                                 orderType === 'collection' && (
-                                    <p className="text-[10px] sm:text-xs text-zinc-400 mt-3 sm:mt-5">You can collect your order from our store at <span className="text-white">{settings?.address}, {settings?.city}</span> </p>
+                                    // <p className="text-[10px] sm:text-xs text-zinc-400 mt-3 sm:mt-5">You can collect your order from our store at <span className="text-white">{settings?.address}, {settings?.city}</span> </p>
+                                    <p className="text-[10px] sm:text-xs text-zinc-300 mt-3 sm:mt-5">Based in Chadderton, Oldham (OL9). Exact collection details will be provided in your order confirmation email. At your selected collection time, please remain in your car and we will bring your order directly to your car. </p>
+
                                 )
                             }
                         </section>
@@ -551,9 +575,9 @@ export default function CheckoutPage() {
                                                         <span className="text-[10px] sm:text-xs font-bold text-zinc-300">{zone.name}</span>
                                                     </div>
                                                     <p className="text-[9px] sm:text-[11px] text-zinc-400">
-                                                        {zone.min_distance > 0 ? `${zone.min_distance} – ` : 'Within '}{zone.max_distance} mi — {symbol}{zone.delivery_fee.toFixed(2)}
+                                                        {zone.min_distance > 0 ? `${zone.min_distance} – ${zone.max_distance}` : `Within ${zone.max_distance}`} miles — {symbol}{zone.delivery_fee.toFixed(2)}
                                                     </p>
-                                                    <p className="text-[8px] sm:text-[10px] text-zinc-500 mt-0.5">Min. {symbol}{zone.minimum_order_amount.toFixed(2)}</p>
+                                                    {/* <p className="text-[8px] sm:text-[10px] text-zinc-500 mt-0.5">Min. {symbol}{zone.minimum_order_amount.toFixed(2)}</p> */}
                                                 </div>
                                             );
                                         })}
@@ -575,6 +599,9 @@ export default function CheckoutPage() {
                                 <InputField label="Full name" name="full_name" placeholder="John Doe" options={{ required: "Name is required" }} />
                                 <InputField label="Email" name="email" placeholder="Email Address" options={{ required: "Email is required" }} />
                                 <InputField label="Phone Number" name="phone" placeholder="+44 7700 900000" options={{ required: "Phone number is required" }} />
+                                {orderType === 'collection' && (
+                                    <InputField label="Car Registration Number" name="car_registration" placeholder="e.g. AB12 CDE" options={{ required: orderType === 'collection' ? "Car registration number is required" : false }} />
+                                )}
                                 {orderType === 'delivery' && (
                                     <>
                                         <div className="md:col-span-2">
@@ -586,59 +613,152 @@ export default function CheckoutPage() {
                                 )}
 
                                 <div className="md:col-span-2 space-y-3 sm:space-y-4">
-                                    <div className="flex justify-between items-end">
-                                        <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400">Time Slot Allocation</label>
-                                        <div className={`text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${allocatedTotal === totalCartQty ? 'bg-brand/20 text-white' : 'bg-red-500/10 text-red-400'}`}>
-                                            {allocatedTotal} / {totalCartQty} Allocated
-                                        </div>
+                                    {/* Order Date Selection */}
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+                                            <FaCalendarAlt size={10} className="text-brand" />
+                                            Select Order Date
+                                        </label>
+                                        {orderDatesLoading ? (
+                                            <div className="flex items-center gap-2 py-4">
+                                                <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+                                                <span className="text-zinc-500 text-xs">Loading dates...</span>
+                                            </div>
+                                        ) : orderDatesData?.data?.length > 0 ? (
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                                {orderDatesData.data.map((dateItem) => {
+                                                    const isSelected = selectedOrderDate?.id === dateItem.id;
+                                                    const isOpen = dateItem.status === 'open';
+                                                    const isSoldOut = dateItem.status === 'sold_out';
+                                                    const isClosed = dateItem.status === 'closed';
+
+                                                    return (
+                                                        <button
+                                                            key={dateItem.id}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                if (isOpen) {
+                                                                    setSelectedOrderDate(isSelected ? null : dateItem);
+                                                                    setAllocations({});
+                                                                }
+                                                            }}
+                                                            disabled={!isOpen}
+                                                            className={`relative group flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all duration-300 text-left
+                                                                ${isSelected
+                                                                    ? 'border-brand bg-brand/10'
+                                                                    : isOpen
+                                                                        ? 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04] cursor-pointer'
+                                                                        : 'border-white/5 bg-white/[0.01] cursor-not-allowed opacity-60'
+                                                                }`}
+                                                        >
+                                                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 transition-all
+                                                                ${isSelected ? 'bg-brand text-white shadow-md shadow-brand/30'
+                                                                    : isOpen ? 'bg-white/10 text-zinc-400'
+                                                                        : 'bg-white/5 text-zinc-600'}`}>
+                                                                <FaCalendarAlt size={14} />
+                                                            </div>
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="font-bold text-[11px] sm:text-xs truncate">
+                                                                    {dateItem.day_name}
+                                                                </div>
+                                                                <p className="text-[9px] sm:text-[10px] text-zinc-400 truncate">
+                                                                    {dateItem.short_date}
+                                                                </p>
+                                                            </div>
+                                                            <div className="shrink-0">
+                                                                {isOpen && (
+                                                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full">Open</span>
+                                                                )}
+                                                                {isSoldOut && (
+                                                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full">Sold Out</span>
+                                                                )}
+                                                                {isClosed && (
+                                                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded-full">Closed</span>
+                                                                )}
+                                                            </div>
+                                                            {isSelected && (
+                                                                <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
+                                                                    <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-brand flex items-center justify-center text-white">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        ) : (
+                                            <div className="text-zinc-200 border border-zinc-500 bg-zinc-900 rounded-2xl px-2 py-4 text-center text-sm animate-pulse">
+                                                No order dates available at the moment
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className="grid grid-cols-1 gap-1 sm:gap-2">
-                                        {timeSlotsLoading ? (
-                                            <div className="flex flex-col items-center justify-center py-10 space-y-3">
-                                                <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
-                                                <div className="text-zinc-500 text-xs sm:text-sm animate-pulse">Loading time slots...</div>
+                                    {/* Time Slot Allocation — only show when a date is selected */}
+                                    {selectedOrderDate && (
+                                        <>
+                                            <div className="flex justify-between items-end mt-4">
+                                                <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400">Time Slot Allocation</label>
+                                                <div className={`text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${allocatedTotal === totalCartQty ? 'bg-brand/20 text-white' : 'bg-red-500/10 text-red-400'}`}>
+                                                    {allocatedTotal} / {totalCartQty} Allocated
+                                                </div>
                                             </div>
-                                        ) : timeSlots?.data?.map((slot) => {
-                                            // if (slot?.disabled) return;
-                                            return (
-                                                <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-1 px-2 sm:px-2 rounded-sm sm:rounded-lg border transition-all ${slot.disabled ? 'opacity-50 grayscale' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
-                                                    <div className="flex-1">
-                                                        <div className="text-xs sm:text-sm font-bold text-white">{slot.start_time}</div>
-                                                        <div className="text-[9px] sm:text-[10px] text-zinc-300 uppercase tracking-widest mt-0.5">{slot.max_capacity - (allocations[slot.id] || 0)} {(slot.max_capacity - (allocations[slot.id] || 0)) === 1 ? 'steak' : 'steaks'} left</div>
-                                                    </div>
-                                                    <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl overflow-hidden shadow-inner">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleAllocationChange(slot.id, (allocations[slot.id] || 0) - 1, slot.max_capacity)}
-                                                            disabled={slot.disabled || (allocations[slot.id] || 0) <= 0}
-                                                            className="p-2 sm:p-3 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                                        >
-                                                            <FaMinus size={9} />
-                                                        </button>
-                                                        <div className="w-8 sm:w-10 text-center text-xs sm:text-sm font-bold text-white tabular-nums">
-                                                            {allocations[slot.id] || 0}
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleAllocationChange(slot.id, (allocations[slot.id] || 0) + 1, slot.max_capacity)}
-                                                            disabled={slot.disabled || (allocations[slot.id] || 0) >= slot.max_capacity || allocatedTotal >= totalCartQty}
-                                                            className="p-2 sm:p-3 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                                        >
-                                                            <FaPlus size={9} />
-                                                        </button>
+
+                                            <div className="relative">
+                                                <div className="max-h-[320px] overflow-y-auto rounded-xl border border-white/5 bg-white/[0.01] pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,255,255,0.1) transparent' }}>
+                                                    <div className="grid grid-cols-1 gap-1 sm:gap-1.5 p-2">
+                                                        {timeSlotsLoading ? (
+                                                            <div className="flex flex-col items-center justify-center py-10 space-y-3">
+                                                                <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+                                                                <div className="text-zinc-500 text-xs sm:text-sm animate-pulse">Loading time slots...</div>
+                                                            </div>
+                                                        ) : timeSlots?.data?.length > 0 ? timeSlots.data.map((slot) => {
+                                                            const allocated = allocations[slot.id] || 0;
+                                                            const remaining = slot.max_capacity - allocated;
+                                                            return (
+                                                                <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-1.5 px-2 rounded-lg border transition-all ${slot.disabled ? 'opacity-40 grayscale border-white/5' : allocated > 0 ? 'bg-brand/5 border-brand/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="text-xs sm:text-sm font-bold text-white">{slot.start_time}</div>
+                                                                        <div className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-widest mt-0.5">
+                                                                            {slot.disabled ? 'Full' : `${remaining} ${remaining === 1 ? 'steak' : 'steaks'} left`}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-lg overflow-hidden shadow-inner shrink-0">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleAllocationChange(slot.id, allocated - 1, slot.max_capacity)}
+                                                                            disabled={slot.disabled || allocated <= 0}
+                                                                            className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                                        >
+                                                                            <FaMinus size={8} />
+                                                                        </button>
+                                                                        <div className="w-7 sm:w-8 text-center text-xs sm:text-sm font-bold text-white tabular-nums">
+                                                                            {allocated}
+                                                                        </div>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleAllocationChange(slot.id, allocated + 1, slot.max_capacity)}
+                                                                            disabled={slot.disabled || allocated >= slot.max_capacity || allocatedTotal >= totalCartQty}
+                                                                            className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                                        >
+                                                                            <FaPlus size={8} />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }) : (
+                                                            <div className="text-zinc-200 border border-zinc-500 bg-zinc-900 rounded-2xl px-2 py-4 text-center text-sm animate-pulse">No time slots available for this date</div>
+                                                        )}
                                                     </div>
                                                 </div>
-                                            )
-                                        })}
-                                        {
-                                            timeSlots?.length === 0 && (
-                                                <div className="text-zinc-200 border border-zinc-500 bg-zinc-900 rounded-2xl px-2 py-4 text-center text-sm animate-pulse">No time slots available</div>
-                                            )
-                                        }
-
-                                    </div>
-                                    {allocatedTotal !== totalCartQty && <p className="text-[12px] text-red-400 font-medium">* Total items ({totalCartQty}) must be fully allocated.</p>}
+                                                {/* Scroll fade hint */}
+                                                {timeSlots?.data?.length > 6 && (
+                                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#141414] to-transparent pointer-events-none rounded-b-xl" />
+                                                )}
+                                            </div>
+                                            {allocatedTotal !== totalCartQty && <p className="text-[12px] text-red-400 font-medium">* Total items ({totalCartQty}) must be fully allocated.</p>}
+                                        </>
+                                    )}
 
                                     <div className="bg-blue-400/5 border border-blue-500/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
                                         <p className="text-[9px] sm:text-[11px] text-white/80 leading-relaxed">

@@ -4,7 +4,7 @@ import React from 'react'
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { fetchOrder } from '@/lib/api';
-import { FaShoppingBag, FaArrowLeft, FaCalendarAlt, FaCreditCard, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhoneAlt, FaCheckCircle, FaChevronLeft, FaStore } from 'react-icons/fa';
+import { FaShoppingBag, FaArrowLeft, FaCalendarAlt, FaCreditCard, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhoneAlt, FaCheckCircle, FaChevronLeft, FaStore, FaCar } from 'react-icons/fa';
 import { MdOutlineDescription, MdOutlineAttachMoney } from 'react-icons/md';
 import Img from '@/app/_components/Img';
 import { useCurrency } from '@/app/providers/SettingsProvider';
@@ -112,6 +112,7 @@ const OrderDetailClient = () => {
                                 </div>
                                 <div className="">
                                     <p className='text-[10px] sm:text-xs mb-1 sm:mb-2 text-zinc-400 capitalize'>Order Type: <span className='text-white'>{order?.order_type}</span></p>
+                                    {order?.order_date && <p className='text-[10px] sm:text-xs mb-1 sm:mb-2 text-zinc-400'>Order Date: <span className='text-white font-semibold'>{new Date(order.order_date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</span></p>}
 
                                     <div className="bg-brand/0 border border-brand/20 px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-center">
                                         <p className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-white/60 mb-0.5">Total Amount Paid</p>
@@ -339,7 +340,19 @@ const OrderDetailClient = () => {
                                             </div>
                                         </div>
 
-
+                                        {order.car_registration && (
+                                            <div className="pt-4 border-t border-white/5">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="w-6 h-6 bg-brand/10 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-brand/20">
+                                                        <FaCar className="text-brand" size={10} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Car Registration</p>
+                                                        <p className="text-sm text-zinc-300 font-bold leading-relaxed uppercase tracking-wider">{order.car_registration}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </>
                                 ) : (
                                     <>

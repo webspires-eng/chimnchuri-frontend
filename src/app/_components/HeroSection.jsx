@@ -75,7 +75,12 @@ const HeroSection = () => {
                     transform: translateZ(0);
                 }
             `}} />
-            <div className="bg-brand py-14 min-h-[20vh] lg:min-h-[50vh] flex items-center justify-center">
+            <div className="bg-brand py-14 min-h-[20vh] lg:min-h-[50vh] flex items-center justify-center relative">
+                {/* Halal badge */}
+                <span className="absolute top-3 right-3 sm:top-4 sm:right-5 text-white/80 text-[10px] sm:text-xs font-black tracking-[0.2em] uppercase select-none">
+                    HALAL
+                </span>
+
                 <div className="flex justify-center items-end">
                     {images.map((img, index) => {
                         const delay = index * LETTER_DURATION;

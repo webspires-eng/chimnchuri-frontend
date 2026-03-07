@@ -38,8 +38,8 @@ export default function Home() {
               </h2>
               <p className="max-w-2xl mx-auto text-zinc-400 text-sm md:text-base leading-relaxed">
                 Born in a home family kitchen, Chim ‘N’ Churri was created with one goal — to bring premium, flavour-packed steak, sides, and signature sauces to Oldham and the wider North West. Steak is at the heart of what we do, and we don’t use cheap cuts — only proper quality steak that would often cost double elsewhere.
-                <br />
-                Every dish is carefully crafted using quality ingredients, with no shortcuts and a commitment to bold, unique, unforgettable flavours — always delivering real value for money”
+                <br /><br />
+                Every dish is carefully crafted using quality ingredients, with no shortcuts and a commitment to bold, unique, unforgettable flavours — always delivering real value for money.
               </p>
             </div>
 

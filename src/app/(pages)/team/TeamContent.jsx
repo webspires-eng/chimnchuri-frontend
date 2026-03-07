@@ -197,8 +197,7 @@ const TeamContent = () => {
                         Dream <span className="text-white/20">Team</span>
                     </h1>
                     <p className="max-w-2xl mx-auto text-zinc-400 text-base md:text-lg leading-relaxed">
-                        We are a collective of flavor enthusiasts, culinary artists, and service perfectionists
-                        dedicated to bringing the most vibrant dining experience to your table.
+                        A crew of flavor lovers, recipe experts, and service pros—dedicated to delivering the boldest, most unforgettable bites straight to your box.
                     </p>
                 </div>
             </section>

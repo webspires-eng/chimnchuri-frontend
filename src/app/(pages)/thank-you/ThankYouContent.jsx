@@ -3,7 +3,7 @@
 import React, { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { FaCheckCircle, FaCreditCard, FaMapMarkerAlt, FaPhoneAlt, FaUser, FaShoppingBag, FaArrowLeft, FaEnvelope, FaStore } from 'react-icons/fa';
+import { FaCheckCircle, FaCreditCard, FaMapMarkerAlt, FaPhoneAlt, FaUser, FaShoppingBag, FaArrowLeft, FaEnvelope, FaStore, FaCar } from 'react-icons/fa';
 import { MdOutlineLocalShipping, MdOutlineDescription, MdOutlineAttachMoney, MdOutlineDiscount } from 'react-icons/md';
 import Img from '@/app/_components/Img';
 import { useQuery } from '@tanstack/react-query';
@@ -82,7 +82,9 @@ const ThankYouContent = () => {
         postal_code,
         payment_method,
         time_slots,
-        order_type
+        order_type,
+        car_registration,
+        order_date
     } = order;
 
     const isDelivery = order_type !== 'collection';
@@ -155,6 +157,7 @@ const ThankYouContent = () => {
                                 </div>
                                 <div className="">
                                     <p className='text-[10px] sm:text-xs mb-1 sm:mb-2 text-zinc-400 capitalize'>Order Type: <span className='text-white'>{order_type}</span></p>
+                                    {order_date && <p className='text-[10px] sm:text-xs mb-1 sm:mb-2 text-zinc-400'>Order Date: <span className='text-white font-semibold'>{new Date(order_date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })}</span></p>}
                                     <div className="text-xs sm:text-sm font-bold w-fit text-white/90 bg-brand/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl border border-brand/20">
                                         Total: {symbol} {grand_total}
                                     </div>
@@ -401,6 +404,19 @@ const ThankYouContent = () => {
                                             </div>
                                         </div>
 
+                                        {car_registration && (
+                                            <div className="pt-4 border-t border-white/5 relative">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-5 h-5 bg-brand/10 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-brand/20">
+                                                        <FaCar className="text-brand" size={10} />
+                                                    </div>
+                                                    <div className="space-y-1">
+                                                        <p className="text-[12px] font-bold uppercase tracking-widest text-zinc-400">Car Registration</p>
+                                                        <p className="text-sm text-zinc-300 leading-relaxed font-bold uppercase tracking-wider">{car_registration}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </>
                                 )}
                             </div>
