@@ -1,82 +1,16 @@
 "use client";
 import { useState, useCallback, useRef, useEffect } from "react";
-import { useSettings } from "@/app/providers/SettingsProvider";
-import { fetchDeliveryZones } from "@/lib/api";
-
-/**
- * Haversine formula to calculate the distance (in miles) between two lat/lng points.
- */
-function haversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 3958.8; // Radius of the Earth in miles
-    const dLat = ((lat2 - lat1) * Math.PI) / 180;
-    const dLon = ((lon2 - lon1) * Math.PI) / 180;
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos((lat1 * Math.PI) / 180) *
-        Math.cos((lat2 * Math.PI) / 180) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-}
-
-/**
- * Search postcodes using postcodes.io query API — returns array of matching postcodes
- */
-async function searchPostcodes(query) {
-    const cleanQuery = query.trim().replace(/\s+/g, " ");
-    const res = await fetch(
-        `https://api.postcodes.io/postcodes?query=${encodeURIComponent(cleanQuery)}`
-    );
-    if (!res.ok) {
-        throw new Error("Invalid postcode");
-    }
-    const data = await res.json();
-    if (data.status !== 200 || !data.result || data.result.length === 0) {
-        throw new Error("Postcode not found");
-    }
-    return data.result.map((r) => ({
-        postcode: r.postcode,
-        lat: r.latitude,
-        lng: r.longitude,
-        ward: r.admin_ward || "",
-        district: r.admin_district || "",
-    }));
-}
-
-/**
- * Geocode a single exact postcode using postcodes.io lookup endpoint
- */
-async function lookupPostcode(postcode) {
-    const cleanPostcode = postcode.trim().replace(/\s+/g, "");
-    const res = await fetch(
-        `https://api.postcodes.io/postcodes/${encodeURIComponent(cleanPostcode)}`
-    );
-    if (!res.ok) {
-        throw new Error("Invalid postcode");
-    }
-    const data = await res.json();
-    if (data.status !== 200 || !data.result) {
-        throw new Error("Postcode not found");
-    }
-    return {
-        postcode: data.result.postcode,
-        lat: data.result.latitude,
-        lng: data.result.longitude,
-        ward: data.result.admin_ward || "",
-        district: data.result.admin_district || "",
-    };
-}
+import { fetchDeliveryZones, searchPostcodesApi, checkDeliveryApi } from "@/lib/api";
 
 /**
  * Custom hook for delivery zone checking (two-step flow)
  *
- * Step 1: searchAddress(query) — searches postcodes.io and returns a dropdown list
- * Step 2: selectAddress(postcodeObj) — user picks a postcode, then zone is calculated
+ * Step 1: searchAddress(query) — searches postcodes via backend Postcoder API
+ * Step 2: selectAddress(postcodeObj) — user picks a postcode, backend calculates zone
+ *
+ * All distance calculation and geocoding now happens on the backend using the Postcoder API.
  */
 const useDeliveryZone = () => {
-    const settings = useSettings();
-
     const [deliveryZone, setDeliveryZone] = useState(null);
     const [distance, setDistance] = useState(null);
     const [isOutOfRange, setIsOutOfRange] = useState(false);
@@ -90,8 +24,6 @@ const useDeliveryZone = () => {
 
     // Cache zones to avoid re-fetching
     const zonesCacheRef = useRef(null);
-    // Cache store geocode
-    const storeGeoRef = useRef(null);
 
     const getZones = useCallback(async () => {
         if (zonesCacheRef.current) return zonesCacheRef.current;
@@ -107,18 +39,8 @@ const useDeliveryZone = () => {
         getZones().catch(() => { });
     }, [getZones]);
 
-    // Get store geocode (cached)
-    const getStoreGeo = useCallback(async () => {
-        if (storeGeoRef.current) return storeGeoRef.current;
-        const storePostcode = settings?.postcode;
-        if (!storePostcode) throw new Error("Store location not configured");
-        const geo = await lookupPostcode(storePostcode);
-        storeGeoRef.current = geo;
-        return geo;
-    }, [settings]);
-
     /**
-     * Step 1: Search postcodes — shows dropdown of matching results
+     * Step 1: Search postcodes — calls backend which uses Postcoder API
      */
     const searchAddress = useCallback(
         async (query) => {
@@ -137,7 +59,20 @@ const useDeliveryZone = () => {
             setCustomerAddress(null);
 
             try {
-                const results = await searchPostcodes(query);
+                const response = await searchPostcodesApi(query);
+
+                if (!response.success) {
+                    throw new Error(response.message || "Search failed");
+                }
+
+                const results = response.data || [];
+
+                if (results.length === 0) {
+                    setError("No postcodes found. Please check and try again.");
+                    setIsSearching(false);
+                    return [];
+                }
+
                 setSearchResults(results);
                 setShowDropdown(true);
                 setIsSearching(false);
@@ -153,7 +88,7 @@ const useDeliveryZone = () => {
     );
 
     /**
-     * Step 2: User selects a postcode from dropdown — calculate zone
+     * Step 2: User selects a postcode from dropdown — backend calculates distance & zone
      */
     const selectAddress = useCallback(
         async (postcodeObj) => {
@@ -166,38 +101,30 @@ const useDeliveryZone = () => {
             setDistance(null);
 
             try {
-                // 1. Fetch delivery zones
-                const deliveryZones = await getZones();
+                // Ensure zones are loaded for local state
+                await getZones();
 
-                // 2. Get the store geocode
-                const storeGeo = await getStoreGeo();
+                // Call backend to check delivery - it handles geocoding & distance calculation
+                const response = await checkDeliveryApi(postcodeObj.postcode);
 
-                // 3. Calculate distance using the selected postcode's lat/lng
-                const dist = haversineDistance(
-                    storeGeo.lat,
-                    storeGeo.lng,
-                    postcodeObj.lat,
-                    postcodeObj.lng
-                );
-
-                const roundedDist = Math.round(dist * 10) / 10;
-                setDistance(roundedDist);
-                setCustomerAddress(postcodeObj);
-
-                // 4. Find matching zone
-                const sortedZones = [...deliveryZones].sort(
-                    (a, b) => a.max_distance - b.max_distance
-                );
-
-                let matchedZone = null;
-                for (const zone of sortedZones) {
-                    if (roundedDist <= zone.max_distance) {
-                        matchedZone = zone;
-                        break;
-                    }
+                if (!response.success) {
+                    throw new Error(response.message || "Delivery check failed");
                 }
 
-                if (matchedZone) {
+                setCustomerAddress(postcodeObj);
+
+                if (response.can_deliver && response.data) {
+                    const roundedDist = response.data.distance;
+                    setDistance(roundedDist);
+
+                    // Build zone object matching what the rest of the app expects
+                    const matchedZone = {
+                        id: response.data.zone_id,
+                        name: response.data.zone_name,
+                        delivery_fee: response.data.delivery_fee,
+                        minimum_order_amount: response.data.minimum_order_amount,
+                    };
+
                     setDeliveryZone(matchedZone);
                     setIsOutOfRange(false);
                     setIsChecking(false);
@@ -209,23 +136,26 @@ const useDeliveryZone = () => {
                         customerAddress: postcodeObj,
                     };
                 } else {
+                    // Out of range
+                    const dist = response.distance || 0;
+                    setDistance(dist);
                     setIsOutOfRange(true);
                     setIsChecking(false);
                     return {
                         zone: null,
-                        distance: roundedDist,
+                        distance: dist,
                         deliveryFee: 0,
                         minOrderAmount: 0,
                         customerAddress: postcodeObj,
                     };
                 }
             } catch (err) {
-                setError("Unable to verify delivery address. Please try again.");
+                setError(err.message || "Unable to verify delivery address. Please try again.");
                 setIsChecking(false);
                 return null;
             }
         },
-        [getZones, getStoreGeo]
+        [getZones]
     );
 
     const reset = useCallback(() => {

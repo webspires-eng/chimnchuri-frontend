@@ -142,3 +142,15 @@ export const fetchTeamApi = () => apiClient("/teams");
 // DELIVERY ZONES
 export const fetchDeliveryZones = () => apiClient("/delivery-zones");
 
+// POSTCODE SEARCH (via backend Postcoder API)
+export const searchPostcodesApi = (query) => apiClient("/search-postcodes", {
+    method: "POST",
+    body: JSON.stringify({ query })
+});
+
+// CHECK DELIVERY (via backend Postcoder API)
+export const checkDeliveryApi = (customerPostcode) => apiClient("/check-delivery", {
+    method: "POST",
+    body: JSON.stringify({ customer_postcode: customerPostcode })
+});
+
