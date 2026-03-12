@@ -78,10 +78,23 @@ export default function CheckoutPage() {
 
 
     const { items } = useSelector((state) => state.cartSlice);
-    const { register, handleSubmit, formState: { errors }, setValue, getValues, trigger } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue, getValues, trigger, watch } = useForm();
+    const watchedFields = watch(["full_name", "email", "phone", "car_registration", "street_address", "postal_code", "city"]);
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const checkoutFormRef = useRef(null);
     const [isUsingCardPayment, setIsUsingCardPayment] = useState(false); // tracks if user toggled to card in CheckoutForm
+
+    // Compute whether all required fields are filled so we can enable the payment section
+    const [wFullName, wEmail, wPhone, wCarReg, wStreetAddress, wPostalCode, wCity] = watchedFields;
+    const baseFieldsReady = !!(wFullName?.trim() && wEmail?.trim() && wPhone?.trim());
+    const collectionReady = orderType === 'collection' && !!wCarReg?.trim();
+    const deliveryReady = orderType === 'delivery' &&
+        !!wStreetAddress?.trim() &&
+        !!wPostalCode?.trim() &&
+        deliveryChecked &&
+        !!deliveryZone &&
+        !isOutOfRange;
+    // NOTE: slotsReady and isPaymentReady are computed AFTER allocations state is declared below
 
     // Reset allocations and delivery zone when order type changes
     useEffect(() => {
@@ -111,6 +124,29 @@ export default function CheckoutPage() {
     const [allocations, setAllocations] = useState({});
     const totalCartQty = items.reduce((sum, item) => sum + item.quantity, 0);
     const allocatedTotal = Object.values(allocations).reduce((sum, q) => sum + q, 0);
+
+    // Slot-dependent readiness checks (must come after allocations are declared)
+    const slotsReady = !!selectedOrderDate && allocatedTotal === totalCartQty && totalCartQty > 0;
+    const isPaymentReady = baseFieldsReady && (orderType === 'collection' ? collectionReady : deliveryReady) && slotsReady;
+
+    // Human-readable hint for what's still missing
+    const paymentBlockReason = !baseFieldsReady
+        ? "Please fill in your name, email and phone number"
+        : orderType === 'collection' && !wCarReg?.trim()
+            ? "Please enter your car registration number"
+            : orderType === 'delivery' && !wStreetAddress?.trim()
+                ? "Please enter your street address"
+                : orderType === 'delivery' && !wPostalCode?.trim()
+                    ? "Please enter your postcode"
+                    : orderType === 'delivery' && !deliveryChecked
+                        ? "Please verify your delivery postcode above"
+                        : orderType === 'delivery' && (!deliveryZone || isOutOfRange)
+                            ? "Sorry, we don't deliver to your area"
+                            : !selectedOrderDate
+                                ? "Please select an order date"
+                                : allocatedTotal !== totalCartQty
+                                    ? `Please allocate all ${totalCartQty} item${totalCartQty !== 1 ? 's' : ''} to a time slot (${allocatedTotal}/${totalCartQty} done)`
+                                    : "";
 
     const handleAllocationChange = (slotId, qty, max) => {
         const value = Math.min(Math.max(0, parseInt(qty) || 0), max);
@@ -202,6 +238,10 @@ export default function CheckoutPage() {
             toast.error("Sorry, we cannot deliver to your area");
             return null;
         }
+        if (orderType === 'delivery' && !deliveryZone) {
+            toast.error("Your location is outside our delivery area. We only deliver within 3.5 miles.");
+            return null;
+        }
         const effectiveMinOrder = orderType === 'delivery' && deliveryZone ? deliveryZone.minimum_order_amount : minOrderAmount;
         if (totalPrice < effectiveMinOrder) {
             toast.error(`Minimum order amount is ${symbol}${effectiveMinOrder.toFixed(2)}`);
@@ -227,7 +267,11 @@ export default function CheckoutPage() {
             return null;
         }
         if (orderType === 'delivery' && !data.street_address) {
-            toast.error("Please fill in your street address");
+            toast.error("Street address is required for delivery orders");
+            return null;
+        }
+        if (orderType === 'delivery' && !data.postal_code) {
+            toast.error("Postcode is required for delivery orders");
             return null;
         }
 
@@ -258,6 +302,10 @@ export default function CheckoutPage() {
         }
         if (orderType === 'delivery' && isOutOfRange) {
             toast.error("Sorry, we cannot deliver to your area");
+            return;
+        }
+        if (orderType === 'delivery' && !deliveryZone) {
+            toast.error("Your location is outside our delivery area. We only deliver within 3.5 miles.");
             return;
         }
 
@@ -617,7 +665,7 @@ export default function CheckoutPage() {
                                             <InputField label="Street Address" name="street_address" placeholder="123 Food Street, Block A" options={{ required: orderType === 'delivery' ? "Address is required" : false }} />
                                         </div>
                                         <InputField label="City" name="city" placeholder="London" options={{ required: orderType === 'delivery' ? "City is required" : false }} />
-                                        <InputField label="Postal Code" name="postal_code" placeholder="SW1A 0AA" />
+                                        <InputField label="Postal Code" name="postal_code" placeholder="SW1A 0AA" options={{ required: orderType === 'delivery' ? "Postcode is required" : false }} />
                                     </>
                                 )}
 
@@ -900,7 +948,17 @@ export default function CheckoutPage() {
                         </section>
 
                         {/* 2. Payment Method */}
-                        <section className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl">
+                        <div className="relative">
+                        {!isPaymentReady && (
+                            <div className="absolute inset-0 z-20 rounded-2xl sm:rounded-3xl bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-3 pointer-events-auto cursor-not-allowed">
+                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-300"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                </div>
+                                <p className="text-xs sm:text-sm font-semibold text-zinc-300 text-center px-6">{paymentBlockReason}</p>
+                                <p className="text-[10px] text-zinc-500 text-center px-8">Complete the details above to unlock payment</p>
+                            </div>
+                        )}
+                        <section className={`bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl transition-opacity duration-300 ${!isPaymentReady ? 'opacity-40 pointer-events-none select-none' : 'opacity-100'}`}>
                             <div className="flex items-center gap-2.5 sm:gap-4 mb-5 sm:mb-8">
                                 <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white flex items-center justify-center">
                                     <FaCreditCard className="text-brand" size={14} />
@@ -983,12 +1041,8 @@ export default function CheckoutPage() {
 
 
 
-                            {/* Show Place Order for COD or Card mode. Hide when GPay mode is active. */}
-                            {paymentMethod === "online" && !isUsingCardPayment ? (
-                                <p className="text-center text-[10px] sm:text-xs text-zinc-500 py-2">
-                                    Tap the payment button above to complete your order, or switch to card
-                                </p>
-                            ) : isCodEnabled || !!isOnlineEnabled ? (
+                            {/* Always show Place Order button */}
+                            {isCodEnabled || !!isOnlineEnabled ? (
                                 <button
                                     onClick={handleSubmit(handlePlaceOrder, onFormError)}
                                     disabled={loading}
@@ -1014,6 +1068,7 @@ export default function CheckoutPage() {
                             )
                             }
                         </section>
+                        </div>
                     </div>
 
                     {/* Right Column: Order Summary */}
