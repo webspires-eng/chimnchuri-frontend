@@ -32,6 +32,13 @@ export const metadata = {
   description: "Chimnchurri is a restaurant that serves delicious food. We are located in Lahore, Pakistan. We offer a wide variety of dishes, including vegetarian and non-vegetarian options. Our menu is updated regularly to ensure that we always have something new to offer our customers.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 const BACKEND_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://admin.chimnchurri.com";
 
 async function fetchSettings() {
