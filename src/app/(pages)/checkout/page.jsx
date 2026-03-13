@@ -363,13 +363,26 @@ export default function CheckoutPage() {
         setLoading(false);
     };
 
-    const InputField = ({ label, name, type = "text", placeholder, options = {} }) => (
+    const renderInputField = (label, name, type = "text", placeholder, options = {}) => (
         <div className="space-y-1">
             <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400">{label}</label>
             <input
                 type={type}
                 {...register(name, options)}
                 placeholder={placeholder}
+                onKeyDown={type === "tel" ? (e) => {
+                    // Allow: backspace, delete, tab, escape, enter, arrows, home, end
+                    const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'];
+                    if (allowedKeys.includes(e.key)) return;
+                    // Allow Ctrl/Cmd + A, C, V, X
+                    if ((e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase())) return;
+                    // Allow: +, spaces, dashes, parentheses (common in phone numbers)
+                    if (['+', ' ', '-', '(', ')'].includes(e.key)) return;
+                    // Block anything that's not a digit
+                    if (!/^\d$/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                } : undefined}
                 className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl text-white placeholder-zinc-400 text-xs sm:text-sm
                     focus:outline-none focus:border-brand/60 focus:ring-2 focus:ring-brand/20 focus:bg-white/[0.08]
                     transition-all duration-300 hover:border-white/20"
@@ -653,19 +666,19 @@ export default function CheckoutPage() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                                <InputField label="Full name" name="full_name" placeholder="John Doe" options={{ required: "Name is required" }} />
-                                <InputField label="Email" name="email" placeholder="Email Address" options={{ required: "Email is required" }} />
-                                <InputField label="Phone Number" name="phone" placeholder="+44 7700 900000" options={{ required: "Phone number is required" }} />
+                                {renderInputField("Full name", "full_name", "text", "John Doe", { required: "Name is required" })}
+                                {renderInputField("Email", "email", "email", "Email Address", { required: "Email is required" })}
+                                {renderInputField("Phone Number", "phone", "tel", "+44 7700 900000", { required: "Phone number is required" })}
                                 {orderType === 'collection' && (
-                                    <InputField label="Car Registration Number" name="car_registration" placeholder="e.g. AB12 CDE" options={{ required: orderType === 'collection' ? "Car registration number is required" : false }} />
+                                    renderInputField("Car Registration Number", "car_registration", "text", "e.g. AB12 CDE", { required: orderType === 'collection' ? "Car registration number is required" : false })
                                 )}
                                 {orderType === 'delivery' && (
                                     <>
                                         <div className="md:col-span-2">
-                                            <InputField label="Street Address" name="street_address" placeholder="123 Food Street, Block A" options={{ required: orderType === 'delivery' ? "Address is required" : false }} />
+                                            {renderInputField("Street Address", "street_address", "text", "123 Food Street, Block A", { required: orderType === 'delivery' ? "Address is required" : false })}
                                         </div>
-                                        <InputField label="City" name="city" placeholder="London" options={{ required: orderType === 'delivery' ? "City is required" : false }} />
-                                        <InputField label="Postal Code" name="postal_code" placeholder="SW1A 0AA" options={{ required: orderType === 'delivery' ? "Postcode is required" : false }} />
+                                        {renderInputField("City", "city", "text", "London", { required: orderType === 'delivery' ? "City is required" : false })}
+                                        {renderInputField("Postal Code", "postal_code", "text", "SW1A 0AA", { required: orderType === 'delivery' ? "Postcode is required" : false })}
                                     </>
                                 )}
 
