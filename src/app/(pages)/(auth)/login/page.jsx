@@ -20,7 +20,7 @@ const LoginPage = () => {
         mutationFn: login,
         onSuccess: (data) => {
             dispatch(setCredentials(data.data));
-            router.push("/categories");
+            router.push("/categories/1");
         },
         onError: (error) => {
             console.log(error);
