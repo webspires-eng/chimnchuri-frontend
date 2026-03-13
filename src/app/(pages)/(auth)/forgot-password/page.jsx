@@ -10,11 +10,25 @@ import { FaEnvelope, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const ForgotPasswordPage = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, setError, formState: { errors } } = useForm();
 
     const mutation = useMutation({
         mutationFn: forgotPasswordApi,
         onSuccess: (data) => {
+            // API returns HTTP 200 even on validation failure — check success flag
+            if (data.success === false) {
+                if (data.errors && typeof data.errors === "object") {
+                    Object.entries(data.errors).forEach(([field, messages]) => {
+                        setError(field, {
+                            type: "server",
+                            message: Array.isArray(messages) ? messages[0] : messages,
+                        });
+                    });
+                } else {
+                    toast.error(data.message || "Something went wrong.");
+                }
+                return;
+            }
             toast.success(data.message || "Password reset link sent to your email");
         },
         onError: (error) => {
