@@ -852,7 +852,7 @@ export default function CheckoutPage() {
                                     />
                                     <div className="bg-yellow-50/10 border border-yellow-500/20 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4">
                                         <p className="text-[10px] sm:text-xs text-yellow-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">⚠️ Allergens Notice</p>
-                                        <p className="text-[9px] sm:text-[11px] text-yellow-300/80 leading-relaxed">Our food may contain or come into contact with common allergens such as nuts, gluten, dairy, eggs, soy, and shellfish. Please inform us of any allergies before placing your order.</p>
+                                        <p className="text-[9px] sm:text-[11px] text-yellow-300/80 leading-relaxed">Our food is prepared in a shared home kitchen and may contain any allergens, including nuts, gluten, dairy, eggs, soy, and shellfish. We cannot cater to specific allergen requests. Please order with caution and ask us if you are unsure.</p>
                                     </div>
 
 
@@ -958,129 +958,133 @@ export default function CheckoutPage() {
                                     <span>Encrypted & Secure</span>
                                 </div>
                             </div>
+                            <div className="bg-yellow-50/10 mt-2 border border-yellow-500/20 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4">
+                                <p className="text-[10px] sm:text-xs text-yellow-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">⚠️ Allergens Notice</p>
+                                <p className="text-[9px] sm:text-[11px] text-yellow-300/80 leading-relaxed">Our food is prepared in a shared home kitchen and may contain any allergens, including nuts, gluten, dairy, eggs, soy, and shellfish. We cannot cater to specific allergen requests. Please order with caution and ask us if you are unsure.</p>
+                            </div>
                         </section>
 
                         {/* 2. Payment Method */}
                         <div className="relative">
-                        {!isPaymentReady && (
-                            <div className="absolute inset-0 z-20 rounded-2xl sm:rounded-3xl bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-3 pointer-events-auto cursor-not-allowed">
-                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-300"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                </div>
-                                <p className="text-xs sm:text-sm font-semibold text-zinc-300 text-center px-6">{paymentBlockReason}</p>
-                                <p className="text-[10px] text-zinc-500 text-center px-8">Complete the details above to unlock payment</p>
-                            </div>
-                        )}
-                        <section className={`bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl transition-opacity duration-300 ${!isPaymentReady ? 'opacity-40 pointer-events-none select-none' : 'opacity-100'}`}>
-                            <div className="flex items-center gap-2.5 sm:gap-4 mb-5 sm:mb-8">
-                                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white flex items-center justify-center">
-                                    <FaCreditCard className="text-brand" size={14} />
-                                </div>
-                                <h2 className="text-sm sm:text-xl font-bold">Payment Method</h2>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-5 sm:mb-8">
-                                {
-                                    !!isCodEnabled && (
-                                        <button
-                                            onClick={() => setPaymentMethod('cod')}
-                                            type="button"
-                                            className={`relative group flex flex-col items-start p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 cursor-pointer text-left
-                                        ${paymentMethod === 'cod'
-                                                    ? 'border-brand bg-brand/10'
-                                                    : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
-                                        >
-                                            <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
-                                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${paymentMethod === 'cod' ? 'bg-brand text-white shadow-lg shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
-                                                    <FaMoneyBillWave size={14} />
-                                                </div>
-                                                <div className="font-bold text-xs sm:text-sm">{orderType === 'collection' ? 'Pay on Collection' : 'Cash on Delivery'}</div>
-                                            </div>
-                                            <p className="text-[10px] sm:text-xs text-zinc-400 leading-relaxed">{orderType === 'collection' ? 'Pay when you collect your order from our store.' : 'Pay with cash when your delicious food arrives at your doorstep.'}</p>
-                                            {paymentMethod === 'cod' && (
-                                                <div className="absolute top-4 right-4 text-brand">
-                                                    <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center text-white">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </button>
-                                    )
-                                }
-
-                                {
-                                    !!isOnlineEnabled && (
-                                        <button
-                                            onClick={() => setPaymentMethod('online')}
-                                            type="button"
-                                            className={`relative group flex flex-col items-start p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 cursor-pointer text-left
-                                        ${paymentMethod === 'online'
-                                                    ? 'border-brand bg-brand/10'
-                                                    : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
-                                        >
-                                            <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
-                                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${paymentMethod === 'online' ? 'bg-brand text-white shadow-lg shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
-                                                    <FaCreditCard size={14} />
-                                                </div>
-                                                <div className="font-bold text-xs sm:text-sm">Pay Online</div>
-                                            </div>
-                                            <p className="text-[10px] sm:text-xs text-zinc-400 leading-relaxed">Fast and secure payment using your credit or debit card.</p>
-                                            {paymentMethod === 'online' && (
-                                                <div className="absolute top-4 right-4 text-brand">
-                                                    <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center text-white">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </button>
-                                    )
-                                }
-
-                            </div>
-
-                            {paymentMethod === "online" && (
-                                <div className="mb-10 pt-4 border-t border-white/5">
-                                    <Elements stripe={stripePromise}>
-                                        <CheckoutForm
-                                            ref={checkoutFormRef}
-                                            amount={grandTotal}
-                                            getFormData={getFormDataForWallet}
-                                            onSuccess={onWalletPaymentSuccess}
-                                            onCardToggle={setIsUsingCardPayment}
-                                        />
-                                    </Elements>
+                            {!isPaymentReady && (
+                                <div className="absolute inset-0 z-20 rounded-2xl sm:rounded-3xl bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-3 pointer-events-auto cursor-not-allowed">
+                                    <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-300"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                                    </div>
+                                    <p className="text-xs sm:text-sm font-semibold text-zinc-300 text-center px-6">{paymentBlockReason}</p>
+                                    <p className="text-[10px] text-zinc-500 text-center px-8">Complete the details above to unlock payment</p>
                                 </div>
                             )}
+                            <section className={`bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl transition-opacity duration-300 ${!isPaymentReady ? 'opacity-40 pointer-events-none select-none' : 'opacity-100'}`}>
+                                <div className="flex items-center gap-2.5 sm:gap-4 mb-5 sm:mb-8">
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-white flex items-center justify-center">
+                                        <FaCreditCard className="text-brand" size={14} />
+                                    </div>
+                                    <h2 className="text-sm sm:text-xl font-bold">Payment Method</h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-5 sm:mb-8">
+                                    {
+                                        !!isCodEnabled && (
+                                            <button
+                                                onClick={() => setPaymentMethod('cod')}
+                                                type="button"
+                                                className={`relative group flex flex-col items-start p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 cursor-pointer text-left
+                                        ${paymentMethod === 'cod'
+                                                        ? 'border-brand bg-brand/10'
+                                                        : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
+                                            >
+                                                <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
+                                                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${paymentMethod === 'cod' ? 'bg-brand text-white shadow-lg shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
+                                                        <FaMoneyBillWave size={14} />
+                                                    </div>
+                                                    <div className="font-bold text-xs sm:text-sm">{orderType === 'collection' ? 'Pay on Collection' : 'Cash on Delivery'}</div>
+                                                </div>
+                                                <p className="text-[10px] sm:text-xs text-zinc-400 leading-relaxed">{orderType === 'collection' ? 'Pay when you collect your order from our store.' : 'Pay with cash when your delicious food arrives at your doorstep.'}</p>
+                                                {paymentMethod === 'cod' && (
+                                                    <div className="absolute top-4 right-4 text-brand">
+                                                        <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center text-white">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </button>
+                                        )
+                                    }
+
+                                    {
+                                        !!isOnlineEnabled && (
+                                            <button
+                                                onClick={() => setPaymentMethod('online')}
+                                                type="button"
+                                                className={`relative group flex flex-col items-start p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 cursor-pointer text-left
+                                        ${paymentMethod === 'online'
+                                                        ? 'border-brand bg-brand/10'
+                                                        : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
+                                            >
+                                                <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
+                                                    <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center transition-all ${paymentMethod === 'online' ? 'bg-brand text-white shadow-lg shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
+                                                        <FaCreditCard size={14} />
+                                                    </div>
+                                                    <div className="font-bold text-xs sm:text-sm">Pay Online</div>
+                                                </div>
+                                                <p className="text-[10px] sm:text-xs text-zinc-400 leading-relaxed">Fast and secure payment using your credit or debit card.</p>
+                                                {paymentMethod === 'online' && (
+                                                    <div className="absolute top-4 right-4 text-brand">
+                                                        <div className="w-5 h-5 rounded-full bg-brand flex items-center justify-center text-white">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </button>
+                                        )
+                                    }
+
+                                </div>
+
+                                {paymentMethod === "online" && (
+                                    <div className="mb-10 pt-4 border-t border-white/5">
+                                        <Elements stripe={stripePromise}>
+                                            <CheckoutForm
+                                                ref={checkoutFormRef}
+                                                amount={grandTotal}
+                                                getFormData={getFormDataForWallet}
+                                                onSuccess={onWalletPaymentSuccess}
+                                                onCardToggle={setIsUsingCardPayment}
+                                            />
+                                        </Elements>
+                                    </div>
+                                )}
 
 
 
-                            {/* Always show Place Order button */}
-                            {isCodEnabled || !!isOnlineEnabled ? (
-                                <button
-                                    onClick={handleSubmit(handlePlaceOrder, onFormError)}
-                                    disabled={loading}
-                                    className={`group w-full flex items-center justify-center gap-3 py-4.5 font-bold rounded-xl sm:rounded-2xl text-sm sm:text-base transition-all duration-300 cursor-pointer
+                                {/* Always show Place Order button */}
+                                {isCodEnabled || !!isOnlineEnabled ? (
+                                    <button
+                                        onClick={handleSubmit(handlePlaceOrder, onFormError)}
+                                        disabled={loading}
+                                        className={`group w-full flex items-center justify-center gap-3 py-4.5 font-bold rounded-xl sm:rounded-2xl text-sm sm:text-base transition-all duration-300 cursor-pointer
                                     ${!loading
-                                            ? 'hover:bg-brand bg-green-700 text-white'
-                                            : 'bg-white/5 text-zinc-500 cursor-not-allowed border border-white/5'}`}
-                                >
-                                    Place Order
-                                    <FaArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={() => toast.error("No Payment methods are available!")}
-                                    disabled={allocatedTotal !== totalCartQty}
-                                    className={`group w-full flex items-center justify-center gap-3 py-4.5 font-bold rounded-2xl transition-all duration-300 cursor-pointer
+                                                ? 'hover:bg-brand bg-green-700 text-white'
+                                                : 'bg-white/5 text-zinc-500 cursor-not-allowed border border-white/5'}`}
+                                    >
+                                        Place Order
+                                        <FaArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => toast.error("No Payment methods are available!")}
+                                        disabled={allocatedTotal !== totalCartQty}
+                                        className={`group w-full flex items-center justify-center gap-3 py-4.5 font-bold rounded-2xl transition-all duration-300 cursor-pointer
                                     ${allocatedTotal === totalCartQty
-                                            ? 'bg-brand hover:bg-green-700 text-white shadow-lg shadow-brand/20'
-                                            : 'bg-white/5 text-zinc-500 cursor-not-allowed border border-white/5'}`}
-                                >
-                                    No Payment methods are available!
-                                </button>
-                            )
-                            }
-                        </section>
+                                                ? 'bg-brand hover:bg-green-700 text-white shadow-lg shadow-brand/20'
+                                                : 'bg-white/5 text-zinc-500 cursor-not-allowed border border-white/5'}`}
+                                    >
+                                        No Payment methods are available!
+                                    </button>
+                                )
+                                }
+                            </section>
                         </div>
                     </div>
 
@@ -1181,6 +1185,10 @@ export default function CheckoutPage() {
                                 <FaShieldAlt size={10} />
                                 <span>Encrypted & Secure</span>
                             </div>
+                        </div>
+                        <div className="bg-yellow-50/10 mt-2 border border-yellow-500/20 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4">
+                            <p className="text-[10px] sm:text-xs text-yellow-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">⚠️ Allergens Notice</p>
+                            <p className="text-[9px] sm:text-[11px] text-yellow-300/80 leading-relaxed">Our food is prepared in a shared home kitchen and may contain any allergens, including nuts, gluten, dairy, eggs, soy, and shellfish. We cannot cater to specific allergen requests. Please order with caution and ask us if you are unsure.</p>
                         </div>
                     </aside>
                 </div>

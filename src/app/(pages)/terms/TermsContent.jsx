@@ -69,7 +69,7 @@ const TermsContent = () => {
                         {
                             icon: <FaExclamationTriangle />,
                             title: "9. Allergen & Dietary Notice",
-                            content: "Our food may contain or come into contact with common allergens, including but not limited to nuts, peanuts, gluten, dairy, eggs, soy, sesame, and shellfish. All food is prepared in a shared kitchen environment, which means cross-contamination is possible.\n\nIf you have any food allergies, intolerances, or specific dietary requirements, you must inform us before placing your order. While every reasonable precaution is taken to minimise risk, Chim 'N' Churri cannot guarantee that any item is completely free from allergens and accepts no legal responsibility for allergic reactions where prior notice has not been given.\n\nFor any allergen-related enquiries before placing an order, please contact us via direct message on Instagram or TikTok at @chimnchurri, or email info@chimnchurri.com, including your full name, email address, and details of your requirements. These are our preferred methods of contact."
+                            content: `Our food may contain or come into contact with common allergens, including but not limited to nuts, peanuts, gluten, dairy, eggs, soy, sesame, and shellfish. All food is prepared in a shared kitchen, and cross-contamination is possible. We cannot cater to specific allergens or dietary requirements, so if you have any food allergies or intolerances, you must order with caution. Chim ‘N’ Churri cannot guarantee that any item is free from allergens and accepts no legal responsibility for allergic reactions. <br/><br/> For any allergen-related enquiries before placing an order, please contact us via direct message on Instagram or TikTok at <span onclick="navigator.clipboard.writeText('@chimnchurri').then(()=>alert('Copied!'))" style="cursor:pointer" class="text-blue-400 hover:underline">@chimnchurri</span>, or email <a class="text-blue-400 hover:underline" href="mailto:info@chimnchurri.com">info@chimnchurri.com</a>, including your full name, email address, mobile number and details of your concerns. These are our preferred methods of contact.`
                         },
                         {
                             icon: <FaCheckCircle />,
@@ -84,9 +84,12 @@ const TermsContent = () => {
                                 </div>
                                 <h2 className="text-xl font-bold">{section.title}</h2>
                             </div>
-                            <p className="text-zinc-400 text-sm leading-relaxed">
-                                {section.content}
-                            </p>
+                            <p
+                                className="text-zinc-400 text-sm leading-relaxed"
+                                dangerouslySetInnerHTML={{
+                                    __html: section.content.replace(/\n\n/g, '<br/><br/>').replace(/\n/g, '<br/>')
+                                }}
+                            />
                         </section>
                     ))}
 
