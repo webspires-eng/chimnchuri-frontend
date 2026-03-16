@@ -30,6 +30,9 @@ const Footer = () => {
                                 <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/faq"}>FAQ</Link>
                             </li>
                             <li className=''>
+                                <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/availability"}>Availability</Link>
+                            </li>
+                            <li className=''>
                                 <Link className='text-sm md:text-md mb-1 md:mb-2 text-white/80 hover:text-black transition ease duration-200 inline-block' href={"/allergens"}>Allergen Info</Link>
                             </li>
                         </ul>
@@ -136,6 +139,7 @@ const Footer = () => {
                     <div className="flex items-center gap-4">
                         <Link href="/privacy" className="hover:text-black transition-colors">Privacy Policy</Link>
                         <Link href="/allergens" className="hover:text-black transition-colors">Allergen Info</Link>
+                        <Link href="/availability" className="hover:text-black transition-colors">Availability</Link>
                         <Link href="/terms" className="hover:text-black transition-colors">Terms &amp; Conditions</Link>
                     </div>
                 </div>

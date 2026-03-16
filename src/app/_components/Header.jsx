@@ -60,6 +60,7 @@ const Header = () => {
                         <li><Link href={"/about"}>About</Link></li>
                         <li><Link href={"/contact"}>Contact</Link></li>
                         <li><Link href={"/faq"}>FAQ</Link></li>
+                        <li><Link href={"/availability"}>Availability</Link></li>
                         <li><a href="/categories/1"
                             className='px-6 py-2 rounded-[5px] text-base font-semibold bg-white text-brand border-none hover:bg-white/90 transition-all duration-300 inline-flex items-center'
                         >Order Online</a></li>
@@ -110,6 +111,7 @@ const Header = () => {
                     <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/about"}>About</Link></li>
                     <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/contact"}>Contact</Link></li>
                     <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/faq"}>FAQ</Link></li>
+                    <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/availability"}>Availability</Link></li>
                     <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/allergens"}>Allergen Info</Link></li>
                     <li className='border-b transition duration-300 rounded-sm hover:bg-brand text-brand hover:text-white border-zinc-400/30'><Link onClick={toggleMobileNav} className='block px-2 py-2 ' href={"/terms"}>Terms & Conditions</Link></li>
                     <li className='mt-4'><a href="/categories/1"
