@@ -222,13 +222,13 @@ const ItemModal = () => {
                         <div className="flex-1 space-y-3 sm:space-y-5 p-3 sm:p-6 pb-24 sm:pb-6">
                             {/* Description */}
                             {data?.description && (
-                                <p className='text-xs sm:text-sm text-zinc-300 leading-relaxed'>{data.description}</p>
+                                <p className='text-sm sm:text-base text-zinc-300 leading-relaxed'>{data.description}</p>
                             )}
 
                             {/* SIZES */}
                             {data?.sizes?.length > 0 && (
                                 <div>
-                                    <h3 className='text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2 sm:mb-3'>Select Size</h3>
+                                    <h3 className='text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400 mb-2 sm:mb-3'>Select Size</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
                                         {data.sizes.map((size) => {
                                             const isActive = selectedSize.id === size.id;
@@ -251,9 +251,9 @@ const ItemModal = () => {
                                                         `}>
                                                             {isActive && <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-white" />}
                                                         </div>
-                                                        <span className={`font-medium text-xs sm:text-sm ${isActive ? 'text-white' : 'text-zinc-300'}`}>{size.name}</span>
+                                                        <span className={`font-medium text-sm sm:text-base ${isActive ? 'text-white' : 'text-zinc-300'}`}>{size.name}</span>
                                                     </div>
-                                                    <Price amount={size.price} className={`text-[11px] sm:text-xs ${isActive ? 'text-white' : ''}`} />
+                                                    <Price amount={size.price} className={`text-xs sm:text-sm font-semibold ${isActive ? 'text-white' : ''}`} />
                                                     <input
                                                         type="radio"
                                                         name="size"
@@ -288,15 +288,15 @@ const ItemModal = () => {
                                             <div key={group.id} className={`rounded-xl sm:rounded-2xl p-3 sm:p-4 transition-all duration-300 ${hasError ? 'bg-red-500/5 ring-1 ring-red-500/20' : 'bg-white/[0.02]'}`}>
                                                 <div className="flex items-center justify-between mb-2 sm:mb-3">
                                                     <div>
-                                                        <h4 className='text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5 sm:gap-2'>
+                                                        <h4 className='text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-500 flex items-center gap-1.5 sm:gap-2'>
                                                             {group.addon_category?.name}
                                                             {isRequired ? (
-                                                                <span className='text-[10px] font-bold text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded-md uppercase'>Required</span>
+                                                                <span className='text-[11px] font-bold text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded-md uppercase'>Required</span>
                                                             ) : (
-                                                                <span className="text-[10px] text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded-md">Optional</span>
+                                                                <span className="text-[11px] text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded-md">Optional</span>
                                                             )}
                                                         </h4>
-                                                        <p className='text-[11px] text-zinc-500 mt-0.5'>
+                                                        <p className='text-xs text-zinc-500 mt-0.5'>
                                                             {group.selection_type === 'single'
                                                                 ? (isRequired ? 'Choose one' : 'Optional (Choose one)')
                                                                 : (minQty > 0
@@ -375,7 +375,7 @@ const ItemModal = () => {
                                                                             {isSelected && <FaCheck className="text-white" size={8} />}
                                                                         </div>
                                                                     )}
-                                                                    <span className={`font-medium text-[11px] sm:text-xs truncate ${isSelected ? 'text-white' : 'text-zinc-300'}`}>{addon.addon_item?.name}</span>
+                                                                    <span className={`font-medium text-xs sm:text-sm truncate ${isSelected ? 'text-white' : 'text-zinc-300'}`}>{addon.addon_item?.name}</span>
                                                                 </div>
 
                                                                 <div className="flex items-center gap-1.5 shrink-0">
@@ -408,7 +408,7 @@ const ItemModal = () => {
                                                                             </button>
                                                                         </div>
                                                                     )}
-                                                                    <Price amount={addonPrice} className={`text-[11px] sm:text-xs ${isSelected ? 'text-white' : ''}`} />
+                                                                    <Price amount={addonPrice} className={`text-xs sm:text-sm font-semibold ${isSelected ? 'text-white' : ''}`} />
                                                                 </div>
                                                             </div>
                                                         );
@@ -452,10 +452,10 @@ const ItemModal = () => {
                         {/* Add to Cart Button */}
                         <button
                             onClick={handleAddToCart}
-                            className="flex-1 h-10 sm:h-12 rounded-xl bg-brand hover:bg-green-700 active:bg-green-800 text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 shadow-lg shadow-brand/20 hover:shadow-brand/30 cursor-pointer text-xs sm:text-base"
+                            className="flex-1 h-10 sm:h-12 rounded-xl bg-brand hover:bg-green-700 active:bg-green-800 text-white font-bold transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 shadow-lg shadow-brand/20 hover:shadow-brand/30 cursor-pointer text-sm sm:text-lg"
                         >
                             <span>Add to Order</span>
-                            <span className="px-1  sm:px-3 py-0.5 sm:py-1 whitespace-nowrap rounded-lg text-xs sm:text-sm font-semibold">{symbol} {calculateTotalPrice()}</span>
+                            <span className="px-1 sm:px-3 py-0.5 sm:py-1 whitespace-nowrap rounded-lg text-sm sm:text-base font-semibold">{symbol} {calculateTotalPrice()}</span>
                         </button>
                     </div>
                 </div>

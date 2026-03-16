@@ -29,7 +29,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Chimnchurri",
-  description: "Chimnchurri is a restaurant that serves delicious food. We are located in Lahore, Pakistan. We offer a wide variety of dishes, including vegetarian and non-vegetarian options. Our menu is updated regularly to ensure that we always have something new to offer our customers.",
+  description: "Chim 'N' Churri | Steak. Sides. Sauce. | Order Online Now",
 };
 
 export const viewport = {

@@ -64,7 +64,7 @@ const ProductCard = ({ item }) => {
                 {/* Bottom row */}
                 <div className="flex items-center justify-between mt-1">
                     {price && (
-                        <Price amount={price} className="text-xs" />
+                        <Price amount={price} className="text-xl font-bold" />
                     )}
 
                     <button

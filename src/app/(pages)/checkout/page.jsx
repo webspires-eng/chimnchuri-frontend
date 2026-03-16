@@ -69,6 +69,9 @@ export default function CheckoutPage() {
     const [deliveryChecked, setDeliveryChecked] = useState(false);
 
     const settings = useSettings();
+    const isDeliveryEnabled = !!settings?.is_delivery_enabled;
+    const isPickupEnabled = !!settings?.is_pickup_enabled;
+    const isOrderEnabled = settings ? !!settings?.is_order_enabled : true; // default true while loading
 
 
     const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
@@ -108,14 +111,27 @@ export default function CheckoutPage() {
     }, [orderType]);
     useEffect(() => {
         if (settings) {
-            let isCodEnabled = settings?.is_cod_enabled;
-            let isOnlineEnabled = settings?.is_online_enabled;
+            const isCodEnabled = settings?.is_cod_enabled;
+            const isOnlineEnabled = settings?.is_online_enabled;
+
+            // Set default payment method based on what's enabled
             if (isCodEnabled && isOnlineEnabled) {
                 setPaymentMethod("cod");
             } else if (isCodEnabled) {
                 setPaymentMethod("cod");
             } else if (isOnlineEnabled) {
                 setPaymentMethod("online");
+            }
+
+            // Determine which order types are available and force a valid default
+            const deliveryOn = !!settings?.is_delivery_enabled;
+            const pickupOn = !!settings?.is_pickup_enabled;
+            if (!deliveryOn && pickupOn) {
+                setOrderType('collection');   // only collection available
+            } else if (deliveryOn && !pickupOn) {
+                setOrderType('delivery');     // only delivery available
+            } else if (!deliveryOn && !pickupOn) {
+                setOrderType('collection');   // neither — fallback, page is blocked anyway
             }
         }
     }, [settings])
@@ -407,6 +423,29 @@ export default function CheckoutPage() {
                 <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-brand/5 blur-3xl opacity-30" />
             </div>
 
+            {/* ── Ordering disabled full-screen gate ── */}
+            {!isOrderEnabled && (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#141414] px-6 text-center space-y-6">
+                    <div className="size-16 rounded-2xl bg-white/[0.05] border border-white/10 flex items-center justify-center">
+                        <FaShoppingBag className="text-zinc-400" size={28} />
+                    </div>
+                    <div className="space-y-2 max-w-sm">
+                        <h1 className="text-2xl font-black text-white">Ordering is Currently Paused</h1>
+                        <p className="text-zinc-400 text-sm leading-relaxed">
+                            We&apos;re not taking orders right now. Orders will reopen when new slots are available — usually every Sunday or Monday.
+                        </p>
+                        <p className="text-zinc-500 text-xs leading-relaxed pt-1">
+                            For urgent enquiries, message us on{' '}
+                            <a href="https://www.instagram.com/chimnchurri" target="_blank" rel="noopener noreferrer" className="text-brand font-semibold hover:underline">Instagram</a>{' '}or{' '}
+                            <a href="https://www.tiktok.com/@chimnchurri" target="_blank" rel="noopener noreferrer" className="text-brand font-semibold hover:underline">TikTok @chimnchurri</a>.
+                        </p>
+                    </div>
+                    <a href="/" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand/10 border border-brand/20 text-brand text-sm font-semibold hover:bg-brand hover:text-white transition-all duration-300">
+                        ← Back to Menu
+                    </a>
+                </div>
+            )}
+
             <div className="max-w-7xl mx-auto relative z-10">
                 <header className="mb-6 sm:mb-10">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-1 sm:mb-2">Checkout</h1>
@@ -426,59 +465,96 @@ export default function CheckoutPage() {
                                 <h2 className="text-sm sm:text-base font-bold">Order Type</h2>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-2 sm:gap-3">
-                                <button
-                                    onClick={() => setOrderType('delivery')}
-                                    type="button"
-                                    className={`relative group flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all duration-300 cursor-pointer
-                                        ${orderType === 'delivery'
-                                            ? 'border-brand bg-brand/10'
-                                            : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
-                                >
-                                    <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 transition-all ${orderType === 'delivery' ? 'bg-brand text-white shadow-md shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
-                                        <FaTruck size={12} />
-                                    </div>
-                                    <div className="text-left">
-                                        <div className="font-bold text-[10px] sm:text-xs">Delivery</div>
-                                        <p className="text-[9px] sm:text-[10px] text-zinc-400">To your door</p>
-                                    </div>
-                                    {orderType === 'delivery' && (
-                                        <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
-                                            <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-brand flex items-center justify-center text-white">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-                                            </div>
+                            <div className={`grid gap-2 sm:gap-3 ${isDeliveryEnabled && isPickupEnabled ? 'grid-cols-2'
+                                    : (!isDeliveryEnabled && !isPickupEnabled) ? 'grid-cols-1'
+                                        : 'grid-cols-1'
+                                }`}>
+                                {/* Delivery button — only shown when delivery is enabled */}
+                                {isDeliveryEnabled && (
+                                    <button
+                                        onClick={() => setOrderType('delivery')}
+                                        type="button"
+                                        className={`relative group flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all duration-300 cursor-pointer
+                                            ${orderType === 'delivery'
+                                                ? 'border-brand bg-brand/10'
+                                                : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
+                                    >
+                                        <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 transition-all ${orderType === 'delivery' ? 'bg-brand text-white shadow-md shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
+                                            <FaTruck size={12} />
                                         </div>
-                                    )}
-                                </button>
+                                        <div className="text-left">
+                                            <div className="font-bold text-[10px] sm:text-xs">Delivery</div>
+                                            <p className="text-[9px] sm:text-[10px] text-zinc-400">To your door</p>
+                                        </div>
+                                        {orderType === 'delivery' && (
+                                            <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
+                                                <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-brand flex items-center justify-center text-white">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </button>
+                                )}
 
-                                <button
-                                    onClick={() => setOrderType('collection')}
-                                    type="button"
-                                    className={`relative group flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all duration-300 cursor-pointer
-                                        ${orderType === 'collection'
-                                            ? 'border-brand bg-brand/10'
-                                            : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
-                                >
-                                    <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 transition-all ${orderType === 'collection' ? 'bg-brand text-white shadow-md shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
-                                        <FaStore size={12} />
-                                    </div>
-                                    <div className="text-left">
-                                        <div className="font-bold text-[10px] sm:text-xs">Collection - Kerbside Service</div>
-                                        {/* <p className="text-[9px] sm:text-[10px] text-zinc-400">Pick up in store</p> */}
-                                        <p className="text-[9px] sm:text-[10px] text-zinc-400">Drop off to your car</p>
-                                    </div>
-                                    {orderType === 'collection' && (
-                                        <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
-                                            <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-brand flex items-center justify-center text-white">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-                                            </div>
+                                {/* Collection button — only shown when pickup is enabled */}
+                                {isPickupEnabled && (
+                                    <button
+                                        onClick={() => setOrderType('collection')}
+                                        type="button"
+                                        className={`relative group flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border-2 transition-all duration-300 cursor-pointer
+                                            ${orderType === 'collection'
+                                                ? 'border-brand bg-brand/10'
+                                                : 'border-white/10 bg-white/[0.02] hover:border-white/30 hover:bg-white/[0.04]'}`}
+                                    >
+                                        <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-md sm:rounded-lg flex items-center justify-center shrink-0 transition-all ${orderType === 'collection' ? 'bg-brand text-white shadow-md shadow-brand/30' : 'bg-white/10 text-zinc-400'}`}>
+                                            <FaStore size={12} />
                                         </div>
-                                    )}
-                                </button>
+                                        <div className="text-left">
+                                            <div className="font-bold text-[10px] sm:text-xs">Collection - Kerbside Service</div>
+                                            <p className="text-[9px] sm:text-[10px] text-zinc-400">Drop off to your car</p>
+                                        </div>
+                                        {orderType === 'collection' && (
+                                            <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
+                                                <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-brand flex items-center justify-center text-white">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </button>
+                                )}
                             </div>
+
+                            {/* No-delivery notice — only shown when delivery is disabled */}
+                            {!isDeliveryEnabled && (
+                                <div className="flex gap-3 items-start mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                                    <div className="shrink-0 size-7 rounded-lg bg-brand/10 flex items-center justify-center text-brand mt-0.5">
+                                        <FaTruck size={11} />
+                                    </div>
+                                    <p className="text-[11px] sm:text-xs text-zinc-400 leading-relaxed">
+                                        We don&apos;t currently offer deliveries through our website. If you&apos;d like to enquire about delivery, please message us on{' '}
+                                        <a href="https://www.instagram.com/chimnchurri" target="_blank" rel="noopener noreferrer" className="text-brand font-semibold hover:underline">Instagram</a>{' '}or{' '}
+                                        <a href="https://www.tiktok.com/@chimnchurri" target="_blank" rel="noopener noreferrer" className="text-brand font-semibold hover:underline">TikTok @chimnchurri</a>.
+                                        {' '}Please note that delivery isn&apos;t always available and a fee will apply.
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* No-pickup notice — only shown when collection/pickup is disabled */}
+                            {!isPickupEnabled && (
+                                <div className="flex gap-3 items-start mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl bg-white/[0.03] border border-white/10">
+                                    <div className="shrink-0 size-7 rounded-lg bg-brand/10 flex items-center justify-center text-brand mt-0.5">
+                                        <FaStore size={11} />
+                                    </div>
+                                    <p className="text-[11px] sm:text-xs text-zinc-400 leading-relaxed">
+                                        Collection / kerbside pickup is not currently available. If you&apos;d like to enquire, please message us on{' '}
+                                        <a href="https://www.instagram.com/chimnchurri" target="_blank" rel="noopener noreferrer" className="text-brand font-semibold hover:underline">Instagram</a>{' '}or{' '}
+                                        <a href="https://www.tiktok.com/@chimnchurri" target="_blank" rel="noopener noreferrer" className="text-brand font-semibold hover:underline">TikTok @chimnchurri</a>.
+                                    </p>
+                                </div>
+                            )}
+
                             {
                                 orderType === 'collection' && (
-                                    // <p className="text-[10px] sm:text-xs text-zinc-400 mt-3 sm:mt-5">You can collect your order from our store at <span className="text-white">{settings?.address}, {settings?.city}</span> </p>
                                     <p className="text-[10px] sm:text-xs text-zinc-300 mt-3 sm:mt-5">
                                         Based in Chadderton, Oldham (OL9), your order will be ready at your scheduled collection time. It is your responsibility to arrive on time, as food is made fresh. Exact collection details will be provided in your order confirmation email.
                                         <br />

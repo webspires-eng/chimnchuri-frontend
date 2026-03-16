@@ -165,6 +165,54 @@ const ThankYouContent = () => {
                             </div>
                         </div>
 
+                        {/* ── Confirmation message ── */}
+                        <div className="bg-brand/5 border border-brand/20 rounded-xl sm:rounded-3xl p-4 sm:p-6 shadow-xl space-y-4">
+                            <div className="flex items-center gap-2 mb-1">
+                                <div className="size-7 rounded-lg bg-brand/20 flex items-center justify-center">
+                                    <FaCheckCircle className="text-brand" size={13} />
+                                </div>
+                                <h3 className="font-bold text-xs sm:text-sm text-white">What happens next?</h3>
+                            </div>
+
+                            <div className="space-y-3">
+                                <div className="flex gap-3 items-start">
+                                    <div className="shrink-0 size-8 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-brand mt-0.5">
+                                        <FaEnvelope size={12} />
+                                    </div>
+                                    <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
+                                        You will receive an <strong className="text-white">email confirmation within the next 20 minutes</strong> with your full order details, collection time, and the exact collection point with instructions.
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-3 items-start">
+                                    <div className="shrink-0 size-8 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-brand mt-0.5">
+                                        <FaCheckCircle size={12} />
+                                    </div>
+                                    <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
+                                        Your order has been <strong className="text-white">confirmed for the date and time you selected</strong>. If there are any issues with your order, a member of Chim &apos;N&apos; Churri will contact you.
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-3 items-start">
+                                    <div className="shrink-0 size-8 rounded-xl bg-white/[0.05] border border-white/10 flex items-center justify-center text-brand mt-0.5">
+                                        <FaCar size={12} />
+                                    </div>
+                                    <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
+                                        We aim to <strong className="text-white">deliver the food directly to your car</strong> at your allocated collection time. However, there may occasionally be slight delays, and we will keep you updated if this happens.
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-3 items-start pt-1 border-t border-white/[0.07]">
+                                    <div className="shrink-0 size-8 rounded-xl bg-brand/15 border border-brand/20 flex items-center justify-center text-brand mt-0.5">
+                                        <MdOutlineDescription size={14} />
+                                    </div>
+                                    <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
+                                        <strong className="text-white">Please make sure to read the confirmation email carefully.</strong> Thanks again for your order — we look forward to serving you! 🥩
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Product List */}
                         <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-3xl overflow-hidden shadow-2xl">
                             <div className="px-4 sm:px-6 py-3 sm:py-5 border-b border-white/5 flex items-center justify-between">
