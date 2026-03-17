@@ -169,10 +169,9 @@ const AvailabilityPageContent = () => {
 
                 {/* ── Status summary strip ── */}
                 {!isLoading && dates.length > 0 && (
-                    <div className="grid grid-cols-3 gap-3 mb-8">
+                    <div className="grid grid-cols-2 gap-3 mb-8">
                         {[
                             { label: 'Open Days', value: openCount, color: 'text-brand' },
-                            { label: 'Sold Out', value: dates.filter((d) => d.status === 'sold_out').length, color: 'text-amber-400' },
                             { label: 'Closed Days', value: dates.filter((d) => d.status === 'closed').length, color: 'text-zinc-500' },
                         ].map((stat) => (
                             <div key={stat.label} className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-4 text-center">
