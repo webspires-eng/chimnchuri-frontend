@@ -93,6 +93,11 @@ export const createOrder = (data) => apiClient("/process-checkout", {
     body: JSON.stringify(data)
 });
 
+export const verifyPaymentApi = (data) => apiClient("/verify-payment", {
+    method: "POST",
+    body: JSON.stringify(data)
+});
+
 
 // ORDERS
 export const fetchOrders = () => apiClient("/orders");

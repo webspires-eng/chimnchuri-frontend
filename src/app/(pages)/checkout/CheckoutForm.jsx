@@ -10,7 +10,7 @@ import {
     PaymentRequestButtonElement
 } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
-import { createOrder } from "@/lib/api";
+import { createOrder, verifyPaymentApi } from "@/lib/api";
 import { toast } from "react-toastify";
 import { FaCreditCard } from "react-icons/fa";
 
@@ -106,6 +106,16 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
                     }
                 }
 
+                // 4. Verify payment with backend — marks as paid & sends emails
+                try {
+                    await verifyPaymentApi({
+                        order_id: response.orderId,
+                        payment_intent_id: response.paymentIntentId,
+                    });
+                } catch (verifyErr) {
+                    console.warn('Verify payment failed (non-blocking):', verifyErr);
+                }
+
                 ev.complete("success");
                 onSuccessRef.current?.(response);
             } catch (err) {
@@ -159,6 +169,16 @@ const CheckoutForm = forwardRef(({ amount, getFormData, onSuccess, onCardToggle 
                 setMessage(result.error.message);
                 setLoading(false);
                 return false;
+            }
+
+            // Verify payment with backend — marks as paid & sends emails
+            try {
+                await verifyPaymentApi({
+                    order_id: response.orderId,
+                    payment_intent_id: result.paymentIntent.id,
+                });
+            } catch (verifyErr) {
+                console.warn('Verify payment failed (non-blocking):', verifyErr);
             }
 
             setLoading(false);

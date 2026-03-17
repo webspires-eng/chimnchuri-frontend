@@ -83,7 +83,7 @@ export default function CheckoutPage() {
     const { items } = useSelector((state) => state.cartSlice);
     const { register, handleSubmit, formState: { errors }, setValue, getValues, trigger, watch } = useForm();
     const watchedFields = watch(["full_name", "email", "phone", "car_registration", "street_address", "postal_code", "city"]);
-    const [paymentMethod, setPaymentMethod] = useState("cod");
+    const [paymentMethod, setPaymentMethod] = useState("online");
     const checkoutFormRef = useRef(null);
     const [isUsingCardPayment, setIsUsingCardPayment] = useState(false); // tracks if user toggled to card in CheckoutForm
 
@@ -116,7 +116,7 @@ export default function CheckoutPage() {
 
             // Set default payment method based on what's enabled
             if (isCodEnabled && isOnlineEnabled) {
-                setPaymentMethod("cod");
+                setPaymentMethod("online");
             } else if (isCodEnabled) {
                 setPaymentMethod("cod");
             } else if (isOnlineEnabled) {
@@ -365,10 +365,16 @@ export default function CheckoutPage() {
 
             if (paymentMethod === "online") {
                 const response = await checkoutFormRef.current?.submitPayment(formData);
-                if (response?.success) {
+                console.log('submitPayment response:', response);
+                if (response && response.orderId) {
                     dispatch(clearCart());
                     toast.success("Order placed successfully");
                     router.push(`/thank-you?id=${response.orderId}`);
+                    return;
+                }
+                if (response === false) {
+                    // Payment failed — error already shown by CheckoutForm
+                    setLoading(false);
                     return;
                 }
             }

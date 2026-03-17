@@ -124,12 +124,24 @@ If you have gluten intolerance or celiac disease, we strongly recommend contacti
         id: 11,
         icon: <FaUndoAlt />,
         question: 'Can orders be changed or cancelled?',
-        answer: `• <strong>Late cancellations</strong> (less than 18 hours' notice) are <strong>non-refundable</strong>.<br/>
-• Cancellations made with more than 24 hours' notice may be eligible for a refund at our discretion.<br/>
-• No refunds will be issued for no-shows, and once preparation for an order has begun, refunds cannot be offered.<br/><br/>
-If you experience any issues with your order:<br/>
-• <strong>Preferred contact:</strong> Send a direct message on Instagram or TikTok <a href="https://www.instagram.com/chimnchurri" target="_blank" class="text-brand hover:underline font-semibold">@chimnchurri</a> with your full name, the email used for the order, and details of your query.<br/>
-• <strong>Alternative contact:</strong> If you cannot reach us on social media, send a text message to <a href="tel:07451221187" class="text-brand hover:underline font-semibold">07451 221187</a> with the same details.`,
+        answer: `<strong>Late cancellations</strong> (less than 18 hours' notice) are normally non-refundable, as steaks are pre-prepared and short notice cancellations may result in the reserved cut being unsold. In certain circumstances, a partial or full refund may be provided at our discretion on a case-by-case basis.
+        <br/>
+        <br/>
+        Cancellations made with less than 2 hours’ notice are fully non-refundable. Only in very serious and exceptional circumstances may this be reviewed at our discretion.<br/>
+        <br/>
+        
+        No refunds will be issued for no-shows, and once preparation for an order has begun, refunds cannot be offered.
+        <br/>
+        <br/>
+        
+         You can make changes to your order if needed, but please provide at least 24 hours’ notice. Changes may not always be available, so we appreciate your understanding.<br/>
+        <br/>
+If you experience any issues with your order:
+
+If you experience any issues with your order, please contact us as soon as possible via:<br/>
+• Preferred contact: Send a direct message on Instagram or TikTok <a href="https://www.instagram.com/chimnchurri" target="_blank" class="text-brand hover:underline font-semibold">@chimnchurri</a> with your full name, the email used for the order, and details of your query.<br/>
+• Alternative contact: If you cannot reach us on social media, send a text message to <a href="tel:07451221187" class="text-brand hover:underline font-semibold">07451 221187</a> with the same details.<br/><br/>
+`,
     },
     {
         id: 12,
@@ -180,8 +192,8 @@ const FAQItem = ({ faq, isOpen, onToggle }) => {
     return (
         <div
             className={`border rounded-2xl overflow-hidden transition-all duration-300 ${isOpen
-                    ? 'border-brand/40 bg-brand/5'
-                    : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.05] hover:border-white/20'
+                ? 'border-brand/40 bg-brand/5'
+                : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.05] hover:border-white/20'
                 }`}
         >
             <button
@@ -191,8 +203,8 @@ const FAQItem = ({ faq, isOpen, onToggle }) => {
             >
                 <div
                     className={`shrink-0 size-10 rounded-xl flex items-center justify-center transition-all duration-300 ${isOpen
-                            ? 'bg-brand text-white scale-110'
-                            : 'bg-brand/10 text-brand group-hover:scale-105'
+                        ? 'bg-brand text-white scale-110'
+                        : 'bg-brand/10 text-brand group-hover:scale-105'
                         }`}
                 >
                     {React.cloneElement(faq.icon, { size: 16 })}
@@ -227,7 +239,7 @@ const FAQItem = ({ faq, isOpen, onToggle }) => {
 };
 
 const FAQContent = () => {
-    const [openId, setOpenId] = useState(1);
+    const [openId, setOpenId] = useState(null);
 
     const handleToggle = (id) => {
         setOpenId(prev => (prev === id ? null : id));

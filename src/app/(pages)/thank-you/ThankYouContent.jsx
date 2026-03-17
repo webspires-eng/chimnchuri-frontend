@@ -213,6 +213,101 @@ const ThankYouContent = () => {
                             </div>
                         </div>
 
+                        {/* ── Important Collection Info ── */}
+                        <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl space-y-5">
+                            <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
+                                Check your email for full details on your order! You can take a screenshot if needed, but you&apos;ll get an email anyway.
+                            </p>
+
+                            {/* Before Your Slot */}
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2">
+                                    <span className="shrink-0 size-7 rounded-lg bg-brand/20 flex items-center justify-center">
+                                        <FaPhoneAlt className="text-brand" size={11} />
+                                    </span>
+                                    Before Your Slot
+                                </h4>
+                                <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed pl-9">
+                                    Text your <strong className="text-white">full name &amp; time slot</strong> to{' '}
+                                    <a href="tel:07451221187" className="text-brand font-bold hover:underline">07451 221187</a>{' '}
+                                    — 5 minutes before arrival.
+                                </p>
+                            </div>
+
+                            {/* Location */}
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2">
+                                    <span className="shrink-0 size-7 rounded-lg bg-brand/20 flex items-center justify-center">
+                                        <FaMapMarkerAlt className="text-brand" size={11} />
+                                    </span>
+                                    📍 Location
+                                </h4>
+                                <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed pl-9">
+                                    Use Google Maps – search <strong className="text-white">&quot;The Forest Tree&quot;</strong>, Chadderton, <strong className="text-white">OL9 0HW</strong>, Oldham. Near the nursery car park. <strong className="text-red-400">DO NOT park inside.</strong>
+                                </p>
+                                <a
+                                    href="https://maps.app.goo.gl/udiYPrfQaN2V8o3w5?g_st=ic"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="ml-9 inline-flex items-center gap-1.5 text-[10px] sm:text-xs text-brand font-semibold hover:underline"
+                                >
+                                    <FaMapMarkerAlt size={10} />
+                                    Open in Google Maps
+                                </a>
+                            </div>
+
+                            {/* Important */}
+                            <div className="space-y-2 p-3 sm:p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/15">
+                                <h4 className="font-bold text-xs sm:text-sm text-yellow-400 flex items-center gap-2">
+                                    ⚠️ Important
+                                </h4>
+                                <ul className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed space-y-1.5 pl-1">
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 rounded-full bg-yellow-400/60 mt-1.5 shrink-0" />
+                                        Nursery car park is <strong className="text-white">private property</strong>.
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 rounded-full bg-yellow-400/60 mt-1.5 shrink-0" />
+                                        Park along the kerb nearby; <strong className="text-white">stay close to the nursery</strong>.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Kerbside Service */}
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2">
+                                    <span className="shrink-0 size-7 rounded-lg bg-brand/20 flex items-center justify-center">
+                                        <FaCar className="text-brand" size={11} />
+                                    </span>
+                                    🚘 Kerbside Service Only
+                                </h4>
+                                <ul className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed space-y-1.5 pl-9">
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 rounded-full bg-brand/60 mt-1.5 shrink-0" />
+                                        <strong className="text-white">Stay in your car.</strong>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 rounded-full bg-brand/60 mt-1.5 shrink-0" />
+                                        We&apos;ll bring your order to you.
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <span className="w-1 h-1 rounded-full bg-brand/60 mt-1.5 shrink-0" />
+                                        <strong className="text-white">Do not knock or get out.</strong>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Final Reminder */}
+                            <div className="flex gap-3 items-start pt-3 border-t border-white/[0.07]">
+                                <div className="shrink-0 size-8 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mt-0.5">
+                                    <MdOutlineDescription size={14} />
+                                </div>
+                                <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
+                                    <strong className="text-red-400">‼️ Reminder:</strong> Please <strong className="text-white">read your email properly</strong> for full order confirmation details.
+                                </p>
+                            </div>
+                        </div>
+
                         {/* Product List */}
                         <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-3xl overflow-hidden shadow-2xl">
                             <div className="px-4 sm:px-6 py-3 sm:py-5 border-b border-white/5 flex items-center justify-between">

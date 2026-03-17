@@ -152,10 +152,7 @@ const AllergenContent = () => {
                         Important Disclaimer
                     </h2>
                     <p className="text-zinc-400 text-sm leading-relaxed">
-                        Orders placed without confirming allergy safety are done <strong className="text-white">at the customer&apos;s own risk</strong>.
-                        Chim &apos;N&apos; Churri accepts no legal responsibility for allergic reactions resulting from orders placed
-                        without prior allergy consultation. If you have a severe or life-threatening allergy, we strongly urge
-                        you <strong className="text-white">not to place an order</strong> until you have spoken with us directly.
+                        Orders placed without confirming allergy safety are done at the customer’s own risk. Chim ‘N’ Churri cannot cater to certain allergies and accepts no legal responsibility for allergic reactions resulting from orders placed without prior allergy consultation. We strongly urge you not to place an order until you have spoken with us directly about your allergy.
                     </p>
                 </div>
 

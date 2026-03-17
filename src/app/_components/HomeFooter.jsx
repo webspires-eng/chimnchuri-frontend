@@ -9,7 +9,7 @@ const HomeFooter = () => {
     const socialLinks = settings?.social_links ? JSON.parse(settings?.social_links) : null;
     return (
         <>
-            <section className="py-10 px-3 lg:py-20 bg-brand">
+            <section className="py-5 px-3 lg:py-10 bg-brand">
                 <div className="max-w-auto mx-auto text-center  font-bold uppercase">
                     {/* <img src={settings?.restaurant_logo ? process.env.NEXT_PUBLIC_BASE_URL + "/" + settings?.restaurant_logo : "/logo.png"} className='h-[100px] mx-auto' alt="" /> */}
                     <img src={process.env.NEXT_PUBLIC_BASE_URL && settings?.restaurant_logo ? `${process.env.NEXT_PUBLIC_BASE_URL}/${settings.restaurant_logo}` : "/logo-light.png"} className='h-[140px] mx-auto' onError={(e) => e.target.src = "/logo-light.png"} alt="Chim 'N' Churri " />
@@ -20,6 +20,8 @@ const HomeFooter = () => {
                         <a href="/categories/1" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Our Menu</a>
                         <Link href="/contact" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Contact</Link>
                         <Link href="/team" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Team</Link>
+                        <Link href="/faq" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">FAQ</Link>
+                        <Link href="/availability" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Availability</Link>
                         <Link href="/privacy" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Privacy Policy</Link>
                         <Link href="/terms" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Terms & Conditions</Link>
                     </div>

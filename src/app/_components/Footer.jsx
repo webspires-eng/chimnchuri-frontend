@@ -133,10 +133,10 @@ const Footer = () => {
             </div>
             <div className="border-b border-gray-600/40 my-4"></div>
             <div className="container mx-auto pb-4 px-2 md:px-4">
-                <div className="flex gap-3 text-center md:text-left flex-col md:flex-row items-center justify-center md:justify-between">
+                <div className="flex gap-3 text-xs md:text-sm text-center md:text-left flex-col md:flex-row items-center justify-center md:justify-between">
                     <p>{new Date().getFullYear()} © {settings?.restaurant_name}. Developed by <a target='_blank' href="https://webspires.co.uk/?utm_source=chimnchurri" className="text-white hover:text-black transition-all duration-500">Webspires</a></p>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap justify-center md:justify-start items-center gap-4">
                         <Link href="/privacy" className="hover:text-black transition-colors">Privacy Policy</Link>
                         <Link href="/allergens" className="hover:text-black transition-colors">Allergen Info</Link>
                         <Link href="/availability" className="hover:text-black transition-colors">Availability</Link>

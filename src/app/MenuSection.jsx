@@ -444,7 +444,9 @@ export default function MenuSection() {
           white-space: nowrap;
           display: block;
         }
-
+        .is-open .slice-3 .card-label{
+          font-size: clamp(1.4rem, 5vw, 2.4rem);
+        }
         .steak-slice:hover .card-label {
           color: var(--color-gold-light);
           letter-spacing: 8px;
