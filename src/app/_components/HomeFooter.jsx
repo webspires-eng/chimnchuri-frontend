@@ -21,7 +21,7 @@ const HomeFooter = () => {
                         <Link href="/contact" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Contact</Link>
                         <Link href="/team" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Team</Link>
                         <Link href="/faq" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">FAQ</Link>
-                        <Link href="/availability" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Availability</Link>
+                        <Link href="/allergens" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Allergy Info</Link>
                         <Link href="/privacy" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Privacy Policy</Link>
                         <Link href="/terms" className="text-white hover:text-black transition-all duration-500 text-sm md:text-lg">Terms & Conditions</Link>
                     </div>

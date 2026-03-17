@@ -445,11 +445,11 @@ export default function MenuSection() {
           display: block;
         }
         .is-open .slice-3 .card-label{
-          font-size: clamp(1.4rem, 5vw, 2.4rem);
+          font-size: clamp(2rem, 5vw, 2.4rem);
+          letter-spacing: 2px;
         }
         .steak-slice:hover .card-label {
           color: var(--color-gold-light);
-          letter-spacing: 8px;
         }
 
         .steak-slice:hover .steak-vector {
