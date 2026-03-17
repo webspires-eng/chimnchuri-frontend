@@ -73,7 +73,7 @@ export default function CheckoutPage() {
     const isPickupEnabled = !!settings?.is_pickup_enabled;
     const isOrderEnabled = settings ? !!settings?.is_order_enabled : true; // default true while loading
 
-
+    console.log(settings);
     const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
     const dispatch = useDispatch();
 
@@ -81,7 +81,7 @@ export default function CheckoutPage() {
 
 
     const { items } = useSelector((state) => state.cartSlice);
-    const { register, handleSubmit, formState: { errors }, setValue, getValues, trigger, watch } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue, getValues, trigger, watch } = useForm({ mode: "onChange" });
     const watchedFields = watch(["full_name", "email", "phone", "car_registration", "street_address", "postal_code", "city"]);
     const [paymentMethod, setPaymentMethod] = useState("online");
     const checkoutFormRef = useRef(null);
@@ -89,7 +89,12 @@ export default function CheckoutPage() {
 
     // Compute whether all required fields are filled so we can enable the payment section
     const [wFullName, wEmail, wPhone, wCarReg, wStreetAddress, wPostalCode, wCity] = watchedFields;
-    const baseFieldsReady = !!(wFullName?.trim() && wEmail?.trim() && wPhone?.trim());
+    const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+    const nameRegex = /^[a-zA-Z\s'\-]+$/;
+    const isNameValid = !!(wFullName?.trim() && wFullName.trim().length >= 2 && nameRegex.test(wFullName.trim()));
+    const isEmailValid = !!(wEmail?.trim() && emailRegex.test(wEmail.trim()));
+    const isPhoneValid = !!(wPhone && wPhone.replace(/\D/g, '').length >= 7);
+    const baseFieldsReady = isNameValid && isEmailValid && isPhoneValid;
     const collectionReady = orderType === 'collection' && !!wCarReg?.trim();
     const deliveryReady = orderType === 'delivery' &&
         !!wStreetAddress?.trim() &&
@@ -146,9 +151,13 @@ export default function CheckoutPage() {
     const isPaymentReady = baseFieldsReady && (orderType === 'collection' ? collectionReady : deliveryReady) && slotsReady;
 
     // Human-readable hint for what's still missing
-    const paymentBlockReason = !baseFieldsReady
-        ? "Please fill in your name, email and phone number"
-        : orderType === 'collection' && !wCarReg?.trim()
+    const paymentBlockReason = !isNameValid
+        ? (!wFullName?.trim() ? "Please enter your full name" : wFullName.trim().length < 2 ? "Name must be at least 2 characters" : "Name can only contain letters, spaces, hyphens and apostrophes")
+        : !isEmailValid
+            ? (!wEmail?.trim() ? "Please enter your email address" : "Please enter a valid email address (e.g. name@example.com)")
+            : !isPhoneValid
+                ? (!wPhone?.trim() ? "Please enter your phone number" : "Phone number must have at least 7 digits")
+                : orderType === 'collection' && !wCarReg?.trim()
             ? "Please enter your car registration number"
             : orderType === 'delivery' && !wStreetAddress?.trim()
                 ? "Please enter your street address"
@@ -477,8 +486,8 @@ export default function CheckoutPage() {
                             </div>
 
                             <div className={`grid gap-2 sm:gap-3 ${isDeliveryEnabled && isPickupEnabled ? 'grid-cols-2'
-                                    : (!isDeliveryEnabled && !isPickupEnabled) ? 'grid-cols-1'
-                                        : 'grid-cols-1'
+                                : (!isDeliveryEnabled && !isPickupEnabled) ? 'grid-cols-1'
+                                    : 'grid-cols-1'
                                 }`}>
                                 {/* Delivery button — only shown when delivery is enabled */}
                                 {isDeliveryEnabled && (
