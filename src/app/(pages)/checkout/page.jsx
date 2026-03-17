@@ -202,17 +202,12 @@ export default function CheckoutPage() {
 
     // Handle react-hook-form validation errors
     const onFormError = (formErrors) => {
-        const errorMessages = [];
-        if (formErrors.full_name) errorMessages.push("Full name is required");
-        if (formErrors.email) errorMessages.push("Email is required");
-        if (formErrors.car_registration) errorMessages.push("Car registration number is required");
-        if (formErrors.street_address) errorMessages.push("Street address is required");
-        if (formErrors.city) errorMessages.push("City is required");
-
-        if (errorMessages.length > 0) {
-            toast.error(errorMessages[0]);
+        // Show the first validation error message from react-hook-form
+        const firstError = Object.values(formErrors)[0];
+        if (firstError?.message) {
+            toast.error(firstError.message);
         } else {
-            toast.error("Please fill in all required fields");
+            toast.error("Please fill in all required fields correctly");
         }
     };
 
@@ -274,20 +269,30 @@ export default function CheckoutPage() {
 
         // Get current form values without triggering HTML validation
         const data = getValues();
-        if (!data.full_name || !data.email || !data.phone) {
-            toast.error("Please fill in your name, email, and phone number");
+        if (!data.full_name || data.full_name.trim().length < 2) {
+            toast.error("Please enter your full name (at least 2 characters)");
             return null;
         }
-        if (orderType === 'collection' && !data.car_registration) {
-            toast.error("Car registration number is required for collection orders");
+        const emailRegex = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+        if (!data.email || !emailRegex.test(data.email.trim())) {
+            toast.error("Please enter a valid email address (e.g. name@example.com)");
             return null;
         }
-        if (orderType === 'delivery' && !data.street_address) {
-            toast.error("Street address is required for delivery orders");
+        const digitsOnly = (data.phone || '').replace(/\D/g, '');
+        if (!data.phone || digitsOnly.length < 7) {
+            toast.error("Please enter a valid phone number (at least 7 digits)");
             return null;
         }
-        if (orderType === 'delivery' && !data.postal_code) {
-            toast.error("Postcode is required for delivery orders");
+        if (orderType === 'collection' && (!data.car_registration || data.car_registration.trim().length < 2)) {
+            toast.error("Please enter a valid car registration number");
+            return null;
+        }
+        if (orderType === 'delivery' && (!data.street_address || data.street_address.trim().length < 3)) {
+            toast.error("Please enter a valid street address");
+            return null;
+        }
+        if (orderType === 'delivery' && (!data.postal_code || data.postal_code.trim().length < 5)) {
+            toast.error("Please enter a valid postcode");
             return null;
         }
 
@@ -748,19 +753,49 @@ export default function CheckoutPage() {
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                                {renderInputField("Full name", "full_name", "text", "John Doe", { required: "Name is required" })}
-                                {renderInputField("Email", "email", "email", "Email Address", { required: "Email is required" })}
-                                {renderInputField("Phone Number", "phone", "tel", "+44 7700 900000", { required: "Phone number is required" })}
+                                {renderInputField("Full name", "full_name", "text", "John Doe", {
+                                    required: "Full name is required",
+                                    minLength: { value: 2, message: "Name must be at least 2 characters" },
+                                    pattern: { value: /^[a-zA-Z\s'\-]+$/, message: "Name can only contain letters, spaces, hyphens and apostrophes" }
+                                })}
+                                {renderInputField("Email", "email", "email", "Email Address", {
+                                    required: "Email is required",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/,
+                                        message: "Please enter a valid email address (e.g. name@example.com)"
+                                    }
+                                })}
+                                {renderInputField("Phone Number", "phone", "tel", "+44 7700 900000", {
+                                    required: "Phone number is required",
+                                    validate: (value) => {
+                                        const digitsOnly = value.replace(/\D/g, '');
+                                        if (digitsOnly.length < 7) return "Phone number must have at least 7 digits";
+                                        if (digitsOnly.length > 15) return "Phone number is too long";
+                                        return true;
+                                    }
+                                })}
                                 {orderType === 'collection' && (
-                                    renderInputField("Car Registration Number", "car_registration", "text", "e.g. AB12 CDE", { required: orderType === 'collection' ? "Car registration number is required" : false })
+                                    renderInputField("Car Registration Number", "car_registration", "text", "e.g. AB12 CDE", {
+                                        required: orderType === 'collection' ? "Car registration number is required" : false,
+                                        minLength: { value: 2, message: "Please enter a valid car registration" }
+                                    })
                                 )}
                                 {orderType === 'delivery' && (
                                     <>
                                         <div className="md:col-span-2">
-                                            {renderInputField("Street Address", "street_address", "text", "123 Food Street, Block A", { required: orderType === 'delivery' ? "Address is required" : false })}
+                                            {renderInputField("Street Address", "street_address", "text", "123 Food Street, Block A", {
+                                                required: orderType === 'delivery' ? "Street address is required" : false,
+                                                minLength: { value: 3, message: "Please enter a valid street address" }
+                                            })}
                                         </div>
-                                        {renderInputField("City", "city", "text", "London", { required: orderType === 'delivery' ? "City is required" : false })}
-                                        {renderInputField("Postal Code", "postal_code", "text", "SW1A 0AA", { required: orderType === 'delivery' ? "Postcode is required" : false })}
+                                        {renderInputField("City", "city", "text", "London", {
+                                            required: orderType === 'delivery' ? "City is required" : false,
+                                            minLength: { value: 2, message: "Please enter a valid city name" }
+                                        })}
+                                        {renderInputField("Postal Code", "postal_code", "text", "SW1A 0AA", {
+                                            required: orderType === 'delivery' ? "Postcode is required" : false,
+                                            minLength: { value: 5, message: "Please enter a valid postcode" }
+                                        })}
                                     </>
                                 )}
 
