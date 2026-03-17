@@ -124,23 +124,13 @@ If you have gluten intolerance or celiac disease, we strongly recommend contacti
         id: 11,
         icon: <FaUndoAlt />,
         question: 'Can orders be changed or cancelled?',
-        answer: `<strong>Late cancellations</strong> (less than 18 hours' notice) are normally non-refundable, as steaks are pre-prepared and short notice cancellations may result in the reserved cut being unsold. In certain circumstances, a partial or full refund may be provided at our discretion on a case-by-case basis.
-        <br/>
-        <br/>
-        Cancellations made with less than 2 hours’ notice are fully non-refundable. Only in very serious and exceptional circumstances may this be reviewed at our discretion.<br/>
-        <br/>
-        
-        No refunds will be issued for no-shows, and once preparation for an order has begun, refunds cannot be offered.
-        <br/>
-        <br/>
-        
-         You can make changes to your order if needed, but please provide at least 24 hours’ notice. Changes may not always be available, so we appreciate your understanding.<br/>
-        <br/>
-If you experience any issues with your order:
-
-If you experience any issues with your order, please contact us as soon as possible via:<br/>
+        answer: `Cancellations made with less than 16 hours' notice are normally non-refundable, as steaks are pre-prepared and short notice cancellations may result in the reserved cut being unsold. In certain circumstances, a partial or full refund may be provided at our discretion on a case-by-case basis.<br/><br/>
+Cancellations made with less than 2 hours' notice are fully non-refundable. Only in very serious and exceptional circumstances may this be reviewed at our discretion.<br/><br/>
+No refunds will be issued for no-shows, and once preparation for an order has begun, refunds cannot be offered.<br/><br/>
+You can make changes to your order if needed, but please provide at least 24 hours' notice. Changes may not always be available, so we appreciate your understanding.<br/><br/>
+If you experience any issues with your order:<br/>
 • Preferred contact: Send a direct message on Instagram or TikTok <a href="https://www.instagram.com/chimnchurri" target="_blank" class="text-brand hover:underline font-semibold">@chimnchurri</a> with your full name, the email used for the order, and details of your query.<br/>
-• Alternative contact: If you cannot reach us on social media, send a text message to <a href="tel:07451221187" class="text-brand hover:underline font-semibold">07451 221187</a> with the same details.<br/><br/>
+• Alternative contact: If you cannot reach us on social media, send a text message to <a href="tel:07451221187" class="text-brand hover:underline font-semibold">07451 221187</a> with the same details.
 `,
     },
     {
