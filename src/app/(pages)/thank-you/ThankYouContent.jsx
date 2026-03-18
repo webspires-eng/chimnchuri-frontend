@@ -180,7 +180,7 @@ const ThankYouContent = () => {
                                         <FaEnvelope size={12} />
                                     </div>
                                     <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
-                                        You will receive an <strong className="text-white">email confirmation within the next 20 minutes</strong> with your full order details, collection time, and the exact collection point with instructions.
+                                        You will receive an email confirmation within the next 15 minutes with your full order details, collection time, and the exact collection point with instructions. If you don’t see the email, <span className='text-red-400'>please check your junk or spam folder</span>.
                                     </p>
                                 </div>
 
