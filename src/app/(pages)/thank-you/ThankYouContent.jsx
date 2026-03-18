@@ -216,7 +216,7 @@ const ThankYouContent = () => {
                         {/* ── Important Collection Info ── */}
                         <div className="bg-white/[0.04] backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl space-y-5">
                             <p className="text-zinc-300 text-[11px] sm:text-xs leading-relaxed">
-                                Check your email for full details on your order! You can take a screenshot if needed, but you&apos;ll get an email anyway.
+                                Check your email for your full order details. You can take a screenshot if needed, but you’ll receive an email confirmation. <span className="text-red-400">Please check your junk or spam folder</span>.
                             </p>
 
                             {/* Before Your Slot */}
