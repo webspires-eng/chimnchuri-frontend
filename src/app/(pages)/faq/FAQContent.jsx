@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
     FaQuestionCircle,
     FaShoppingBag,
@@ -179,19 +179,6 @@ We'll do our best to respond as quickly as possible!`,
 ];
 
 const FAQItem = ({ faq, isOpen, onToggle }) => {
-    const contentRef = useRef(null);
-    const [height, setHeight] = useState(0);
-
-    useEffect(() => {
-        if (contentRef.current) {
-            if (isOpen) {
-                setHeight(contentRef.current.scrollHeight);
-            } else {
-                setHeight(0);
-            }
-        }
-    }, [isOpen]);
-
     return (
         <div
             className={`border rounded-2xl overflow-hidden transition-colors duration-300 ${isOpen
@@ -226,20 +213,22 @@ const FAQItem = ({ faq, isOpen, onToggle }) => {
             </button>
 
             <div
-                ref={contentRef}
+                className="grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.33,1,0.68,1)]"
                 style={{
-                    height: `${height}px`,
-                    opacity: isOpen ? 1 : 0,
-                    willChange: 'height',
+                    gridTemplateRows: isOpen ? '1fr' : '0fr',
                 }}
-                className="overflow-hidden transition-[height,opacity] duration-350 ease-[cubic-bezier(0.4,0,0.2,1)]"
             >
-                <div className="px-5 md:px-6 pb-5 md:pb-6 pt-0">
-                    <div className="h-px w-full bg-white/10 mb-4" />
-                    <p
-                        className="text-zinc-400 text-sm leading-relaxed pl-14"
-                        dangerouslySetInnerHTML={{ __html: faq.answer }}
-                    />
+                <div
+                    className="overflow-hidden transition-opacity duration-300"
+                    style={{ opacity: isOpen ? 1 : 0 }}
+                >
+                    <div className="px-5 md:px-6 pb-5 md:pb-6 pt-0">
+                        <div className="h-px w-full bg-white/10 mb-4" />
+                        <p
+                            className="text-zinc-400 text-sm leading-relaxed pl-14"
+                            dangerouslySetInnerHTML={{ __html: faq.answer }}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
