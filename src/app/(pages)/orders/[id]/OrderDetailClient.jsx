@@ -267,14 +267,18 @@ const OrderDetailClient = () => {
                                     <span className="text-zinc-500">Subtotal</span>
                                     <span className="text-zinc-200">{symbol} {order.sub_total}</span>
                                 </div>
-                                <div className="flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                                    <span className="text-zinc-500">Delivery Fee</span>
-                                    <span className="text-zinc-200">{symbol} {order.delivery_charges || 0}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest text-green-500/80">
-                                    <span>Discount</span>
-                                    <span>- {symbol} {order.discount_total || 0}</span>
-                                </div>
+                                {order.order_type !== 'collection' && (
+                                    <>
+                                        <div className="flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                                            <span className="text-zinc-500">Delivery Fee</span>
+                                            <span className="text-zinc-200">{symbol} {order.delivery_charges || 0}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest text-green-500/80">
+                                            <span>Discount</span>
+                                            <span>- {symbol} {order.discount_total || 0}</span>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="flex justify-between items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest">
                                     <span className="text-zinc-500">Tax</span>
                                     <span className="text-zinc-200">{symbol} {order.tax_total || 0}</span>

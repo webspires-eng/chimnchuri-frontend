@@ -912,34 +912,40 @@ export default function CheckoutPage() {
                                                             const allocated = allocations[slot.id] || 0;
                                                             const remaining = slot.max_capacity - allocated;
                                                             return (
-                                                                <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-1.5 px-2 rounded-lg border transition-all ${slot.disabled ? 'opacity-40 grayscale border-white/5' : allocated > 0 ? 'bg-brand/5 border-brand/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
+                                                                <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-1.5 px-2 rounded-lg border transition-all ${slot.disabled ? 'bg-red-500/[0.04] border-red-500/15' : allocated > 0 ? 'bg-brand/5 border-brand/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
                                                                     <div className="flex-1 min-w-0">
-                                                                        <div className="text-xs sm:text-sm font-bold text-white">{slot.start_time}</div>
-                                                                        <div className="text-[9px] sm:text-[10px] text-zinc-400 uppercase tracking-widest mt-0.5">
-                                                                            {slot.disabled ? 'Full' : `${remaining} ${remaining === 1 ? 'steak' : 'steaks'} left`}
+                                                                        <div className={`text-xs sm:text-sm font-bold ${slot.disabled ? 'text-zinc-400' : 'text-white'}`}>{slot.start_time}</div>
+                                                                        <div className={`text-[9px] sm:text-[10px] uppercase tracking-widest mt-0.5 ${slot.disabled ? 'text-red-400 font-bold' : 'text-zinc-400'}`}>
+                                                                            {slot.disabled ? 'Sold Out' : `${remaining} ${remaining === 1 ? 'steak' : 'steaks'} left`}
                                                                         </div>
                                                                     </div>
-                                                                    <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-lg overflow-hidden shadow-inner shrink-0">
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handleAllocationChange(slot.id, allocated - 1, slot.max_capacity)}
-                                                                            disabled={slot.disabled || allocated <= 0}
-                                                                            className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                                                        >
-                                                                            <FaMinus size={8} />
-                                                                        </button>
-                                                                        <div className="w-7 sm:w-8 text-center text-xs sm:text-sm font-bold text-white tabular-nums">
-                                                                            {allocated}
+                                                                    {slot.disabled ? (
+                                                                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 px-2.5 py-1 rounded-lg border border-red-500/20 shrink-0">
+                                                                            Sold Out
+                                                                        </span>
+                                                                    ) : (
+                                                                        <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-lg overflow-hidden shadow-inner shrink-0">
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => handleAllocationChange(slot.id, allocated - 1, slot.max_capacity)}
+                                                                                disabled={allocated <= 0}
+                                                                                className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                                            >
+                                                                                <FaMinus size={8} />
+                                                                            </button>
+                                                                            <div className="w-7 sm:w-8 text-center text-xs sm:text-sm font-bold text-white tabular-nums">
+                                                                                {allocated}
+                                                                            </div>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => handleAllocationChange(slot.id, allocated + 1, slot.max_capacity)}
+                                                                                disabled={allocated >= slot.max_capacity || allocatedTotal >= totalCartQty}
+                                                                                className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                                            >
+                                                                                <FaPlus size={8} />
+                                                                            </button>
                                                                         </div>
-                                                                        <button
-                                                                            type="button"
-                                                                            onClick={() => handleAllocationChange(slot.id, allocated + 1, slot.max_capacity)}
-                                                                            disabled={slot.disabled || allocated >= slot.max_capacity || allocatedTotal >= totalCartQty}
-                                                                            className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-                                                                        >
-                                                                            <FaPlus size={8} />
-                                                                        </button>
-                                                                    </div>
+                                                                    )}
                                                                 </div>
                                                             )
                                                         }) : (
@@ -1037,23 +1043,25 @@ export default function CheckoutPage() {
                                         <span>Subtotal</span>
                                         <span className="text-zinc-200">{symbol} {totalPrice.toFixed(2)}</span>
                                     </div>
-                                    <div className="flex justify-between text-xs sm:text-sm text-zinc-300">
-                                        <span>Delivery Fee</span>
-                                        {orderType === 'collection' ? (
-                                            <span className="text-green-400 line-through opacity-60">{symbol} {settingsDeliveryFee.toFixed(2)}</span>
-                                        ) : deliveryChecked && deliveryZone ? (
-                                            <span className="text-zinc-200">{symbol} {deliveryZone.delivery_fee.toFixed(2)}</span>
-                                        ) : deliveryChecked && isOutOfRange ? (
-                                            <span className="text-red-400 text-[10px] sm:text-xs">Out of range</span>
-                                        ) : (
-                                            <span className="text-zinc-500 text-[10px] sm:text-xs italic">Enter postcode to check</span>
-                                        )}
-                                    </div>
+                                    {orderType !== 'collection' && (
+                                        <div className="flex justify-between text-xs sm:text-sm text-zinc-300">
+                                            <span>Delivery Fee</span>
+                                            {deliveryChecked && deliveryZone ? (
+                                                <span className="text-zinc-200">{symbol} {deliveryZone.delivery_fee.toFixed(2)}</span>
+                                            ) : deliveryChecked && isOutOfRange ? (
+                                                <span className="text-red-400 text-[10px] sm:text-xs">Out of range</span>
+                                            ) : (
+                                                <span className="text-zinc-500 text-[10px] sm:text-xs italic">Enter postcode to check</span>
+                                            )}
+                                        </div>
+                                    )}
 
-                                    <div className="flex justify-between text-xs sm:text-sm text-green-500">
-                                        <span>Discount</span>
-                                        <span className="text-green-500">{symbol} {discount.toFixed(2)}</span>
-                                    </div>
+                                    {orderType !== 'collection' && discount > 0 && (
+                                        <div className="flex justify-between text-xs sm:text-sm text-green-500">
+                                            <span>Discount</span>
+                                            <span className="text-green-500">{symbol} {discount.toFixed(2)}</span>
+                                        </div>
+                                    )}
 
                                     <div className="flex justify-between text-xs sm:text-sm text-zinc-300">
                                         <span>Tax ({tax}%)</span>
@@ -1265,23 +1273,25 @@ export default function CheckoutPage() {
                                     <span>Subtotal</span>
                                     <span className="text-zinc-200">{symbol} {totalPrice.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-xs sm:text-sm text-zinc-300">
-                                    <span>Delivery Fee</span>
-                                    {orderType === 'collection' ? (
-                                        <span className="text-green-400 line-through opacity-60">{symbol} {settingsDeliveryFee.toFixed(2)}</span>
-                                    ) : deliveryChecked && deliveryZone ? (
-                                        <span className="text-zinc-200">{symbol} {deliveryZone.delivery_fee.toFixed(2)}</span>
-                                    ) : deliveryChecked && isOutOfRange ? (
-                                        <span className="text-red-400 text-[10px] sm:text-xs">Out of range</span>
-                                    ) : (
-                                        <span className="text-zinc-500 text-[10px] sm:text-xs italic">Enter postcode to check</span>
-                                    )}
-                                </div>
+                                {orderType !== 'collection' && (
+                                    <div className="flex justify-between text-xs sm:text-sm text-zinc-300">
+                                        <span>Delivery Fee</span>
+                                        {deliveryChecked && deliveryZone ? (
+                                            <span className="text-zinc-200">{symbol} {deliveryZone.delivery_fee.toFixed(2)}</span>
+                                        ) : deliveryChecked && isOutOfRange ? (
+                                            <span className="text-red-400 text-[10px] sm:text-xs">Out of range</span>
+                                        ) : (
+                                            <span className="text-zinc-500 text-[10px] sm:text-xs italic">Enter postcode to check</span>
+                                        )}
+                                    </div>
+                                )}
 
-                                <div className="flex justify-between text-xs sm:text-sm text-green-500">
-                                    <span>Discount</span>
-                                    <span className="text-green-500">{symbol} {discount.toFixed(2)}</span>
-                                </div>
+                                {orderType !== 'collection' && discount > 0 && (
+                                    <div className="flex justify-between text-xs sm:text-sm text-green-500">
+                                        <span>Discount</span>
+                                        <span className="text-green-500">{symbol} {discount.toFixed(2)}</span>
+                                    </div>
+                                )}
 
                                 <div className="flex justify-between text-xs sm:text-sm text-zinc-300">
                                     <span>Tax ({tax}%)</span>

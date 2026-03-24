@@ -455,14 +455,18 @@ const ThankYouContent = () => {
                                     <span className="text-zinc-400">Subtotal</span>
                                     <span className="font-medium text-zinc-200">{symbol} {sub_total}</span>
                                 </div>
-                                <div className="flex justify-between items-center text-xs sm:text-sm">
-                                    <span className="text-zinc-400">Discount</span>
-                                    <span className="font-medium text-green-500">- {symbol} {discount_total || 0}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-xs sm:text-sm">
-                                    <span className="text-zinc-400">Delivery Charge</span>
-                                    <span className="font-medium text-zinc-200">{symbol} {delivery_charges || 0}</span>
-                                </div>
+                                {!isDelivery ? null : (
+                                    <>
+                                        <div className="flex justify-between items-center text-xs sm:text-sm">
+                                            <span className="text-zinc-400">Discount</span>
+                                            <span className="font-medium text-green-500">- {symbol} {discount_total || 0}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center text-xs sm:text-sm">
+                                            <span className="text-zinc-400">Delivery Charge</span>
+                                            <span className="font-medium text-zinc-200">{symbol} {delivery_charges || 0}</span>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="flex justify-between items-center text-xs sm:text-sm pb-1 sm:pb-2">
                                     <span className="text-zinc-400">Service Tax</span>
                                     <span className="font-medium text-zinc-200">{symbol} {tax_total || 0}</span>
