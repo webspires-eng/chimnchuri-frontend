@@ -68,8 +68,8 @@ const cartSlice = createSlice({
                 itemTotal,
             };
 
-            // Add to cart
-            const maxItems = process.env.NEXT_PUBLIC_MAX_CART_ITEMS ? parseInt(process.env.NEXT_PUBLIC_MAX_CART_ITEMS) : 5;
+            // If maxItems is passed via payload from component, we can use it, else component already checked
+            const maxItems = action.payload.maxItems || 9999;
             if (state.totalItems + quantity > maxItems) {
                 return state;
             }
@@ -109,7 +109,7 @@ const cartSlice = createSlice({
             const item = state.items.find(item => item.id === id);
 
             if (item && quantity > 0) {
-                const maxItems = process.env.NEXT_PUBLIC_MAX_CART_ITEMS ? parseInt(process.env.NEXT_PUBLIC_MAX_CART_ITEMS) : 5;
+                const maxItems = action.payload.maxItems || 9999;
                 const newTotalItems = state.totalItems - item.quantity + quantity;
 
                 if (newTotalItems > maxItems) {
@@ -146,7 +146,7 @@ const cartSlice = createSlice({
             const item = state.items.find(item => item.id === itemId);
 
             if (item) {
-                const maxItems = process.env.NEXT_PUBLIC_MAX_CART_ITEMS ? parseInt(process.env.NEXT_PUBLIC_MAX_CART_ITEMS) : 5;
+                const maxItems = action.payload.maxItems || 9999;
                 if (state.totalItems >= maxItems) {
                     return state;
                 }

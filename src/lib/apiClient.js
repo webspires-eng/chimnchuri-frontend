@@ -5,7 +5,7 @@ export async function apiClient(url, options = {}, _retried = false) {
     const isServer = typeof window === "undefined";
     const baseUrl = isServer
         ? `${BACKEND_URL}/api/v1/frontend`
-        : `/api/v1/frontend`;
+        : `${BACKEND_URL}/api/v1/frontend`;
     const response = await fetch(`${baseUrl}${url}`, {
         ...options,
         credentials: "include",

@@ -43,8 +43,9 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://admin.chimnchur
 
 async function fetchSettings() {
   try {
+    const isDev = process.env.NEXT_PUBLIC_ENV === 'dev';
     const res = await fetch(`${BACKEND_URL}/api/v1/frontend/settings`, {
-      next: { revalidate: 60 },
+      next: { revalidate: isDev ? 0 : 60 },
     });
     if (!res.ok) return null;
     const json = await res.json();

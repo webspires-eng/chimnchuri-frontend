@@ -158,20 +158,20 @@ export default function CheckoutPage() {
             : !isPhoneValid
                 ? (!wPhone?.trim() ? "Please enter your phone number" : "Phone number must have at least 7 digits")
                 : orderType === 'collection' && !wCarReg?.trim()
-            ? "Please enter your car registration number"
-            : orderType === 'delivery' && !wStreetAddress?.trim()
-                ? "Please enter your street address"
-                : orderType === 'delivery' && !wPostalCode?.trim()
-                    ? "Please enter your postcode"
-                    : orderType === 'delivery' && !deliveryChecked
-                        ? "Please verify your delivery postcode above"
-                        : orderType === 'delivery' && (!deliveryZone || isOutOfRange)
-                            ? "Sorry, we don't deliver to your area"
-                            : !selectedOrderDate
-                                ? "Please select an order date"
-                                : allocatedTotal !== totalCartQty
-                                    ? `Please allocate all ${totalCartQty} item${totalCartQty !== 1 ? 's' : ''} to a time slot (${allocatedTotal}/${totalCartQty} done)`
-                                    : "";
+                    ? "Please enter your car registration number"
+                    : orderType === 'delivery' && !wStreetAddress?.trim()
+                        ? "Please enter your street address"
+                        : orderType === 'delivery' && !wPostalCode?.trim()
+                            ? "Please enter your postcode"
+                            : orderType === 'delivery' && !deliveryChecked
+                                ? "Please verify your delivery postcode above"
+                                : orderType === 'delivery' && (!deliveryZone || isOutOfRange)
+                                    ? "Sorry, we don't deliver to your area"
+                                    : !selectedOrderDate
+                                        ? "Please select an order date"
+                                        : allocatedTotal !== totalCartQty
+                                            ? `Please allocate all ${totalCartQty} item${totalCartQty !== 1 ? 's' : ''} to a time slot (${allocatedTotal}/${totalCartQty} done)`
+                                            : "";
 
     const handleAllocationChange = (slotId, qty, max) => {
         const value = Math.min(Math.max(0, parseInt(qty) || 0), max);

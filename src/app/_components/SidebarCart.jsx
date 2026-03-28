@@ -6,7 +6,7 @@ import { toggleCart, removeFromCart, incrementQuantity, decrementQuantity } from
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Img from './Img'
-import { useCurrency } from '../providers/SettingsProvider'
+import { useCurrency, useSettings } from '../providers/SettingsProvider'
 import { toast } from 'react-toastify'
 
 
@@ -15,6 +15,8 @@ const SidebarCart = () => {
     const router = useRouter()
 
     const { code, symbol, format } = useCurrency();
+    const settings = useSettings();
+    const maxItems = settings?.max_cart_items ? parseInt(settings?.max_cart_items) : 5;
 
     const { items, totalItems, totalPrice, isCartOpen } = useSelector((state) => state.cartSlice)
     const sidebarRef = useRef(null)
@@ -175,7 +177,6 @@ const SidebarCart = () => {
                                             <span className="w-8 text-center text-sm font-bold text-white select-none">{item.quantity}</span>
                                             <button
                                                 onClick={() => {
-                                                    const maxItems = process.env.NEXT_PUBLIC_MAX_CART_ITEMS ? parseInt(process.env.NEXT_PUBLIC_MAX_CART_ITEMS) : 5;
                                                     if (totalItems >= maxItems) {
                                                         toast.info(`Cart limit of ${maxItems} items reached. For larger orders, please contact our support.`, {
                                                             position: "top-center",
@@ -186,7 +187,7 @@ const SidebarCart = () => {
                                                     }
                                                     dispatch(incrementQuantity(item.id))
                                                 }}
-                                                className={`w-8 h-8 flex items-center justify-center rounded-r-lg transition-all duration-300 cursor-pointer ${totalItems >= (process.env.NEXT_PUBLIC_MAX_CART_ITEMS ? parseInt(process.env.NEXT_PUBLIC_MAX_CART_ITEMS) : 5) ? 'text-zinc-600 bg-white/[0.02]' : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'}`}
+                                                className={`w-8 h-8 flex items-center justify-center rounded-r-lg transition-all duration-300 cursor-pointer ${totalItems >= maxItems ? 'text-zinc-600 bg-white/[0.02]' : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'}`}
                                             >
                                                 <FaPlus size={9} />
                                             </button>

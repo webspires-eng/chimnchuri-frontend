@@ -5,13 +5,15 @@ import { FaTimes, FaPlus, FaMinus, FaCheck, FaShoppingBag } from 'react-icons/fa
 import { useDispatch, useSelector } from 'react-redux'
 import Img from './Img'
 import { addToCart } from '@/store/features/cartSlice'
-import { useCurrency } from '../providers/SettingsProvider'
+import { useCurrency, useSettings } from '../providers/SettingsProvider'
 import Price from './Price'
 
 const ItemModal = () => {
     const dispatch = useDispatch();
 
     const { code, symbol, format } = useCurrency();
+    const settings = useSettings();
+    const maxItems = settings?.max_cart_items ? parseInt(settings?.max_cart_items) : 5;
 
 
     const { isModalOpen, itemData, isInCart } = useSelector((state) => state.itemModalSlice);
@@ -147,7 +149,6 @@ const ItemModal = () => {
             return;
         }
 
-        const maxItems = process.env.NEXT_PUBLIC_MAX_CART_ITEMS ? parseInt(process.env.NEXT_PUBLIC_MAX_CART_ITEMS) : 5;
         const currentTotalItems = items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
         if (currentTotalItems + quantity > maxItems) {
