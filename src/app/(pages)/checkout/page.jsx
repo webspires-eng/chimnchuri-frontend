@@ -401,7 +401,7 @@ export default function CheckoutPage() {
 
     const renderInputField = (label, name, type = "text", placeholder, options = {}) => (
         <div className="space-y-1">
-            <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400">{label}</label>
+            <label className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400">{label}</label>
             <input
                 type={type}
                 {...register(name, options)}
@@ -419,11 +419,11 @@ export default function CheckoutPage() {
                         e.preventDefault();
                     }
                 } : undefined}
-                className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl text-white placeholder-zinc-400 text-xs sm:text-sm
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl text-white placeholder-zinc-400 text-sm sm:text-base
                     focus:outline-none focus:border-brand/60 focus:ring-2 focus:ring-brand/20 focus:bg-white/[0.08]
                     transition-all duration-300 hover:border-white/20"
             />
-            {errors[name] && <p className="text-[10px] sm:text-xs text-red-400 mt-1">{errors[name].message}</p>}
+            {errors[name] && <p className="text-xs sm:text-sm text-red-400 mt-1">{errors[name].message}</p>}
         </div>
     );
 
@@ -503,8 +503,8 @@ export default function CheckoutPage() {
                                             <FaTruck size={12} />
                                         </div>
                                         <div className="text-left">
-                                            <div className="font-bold text-[10px] sm:text-xs">Delivery</div>
-                                            <p className="text-[9px] sm:text-[10px] text-zinc-400">To your door</p>
+                                            <div className="font-bold text-xs sm:text-sm">Delivery</div>
+                                            <p className="text-[10px] sm:text-xs text-zinc-400">To your door</p>
                                         </div>
                                         {orderType === 'delivery' && (
                                             <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
@@ -530,8 +530,8 @@ export default function CheckoutPage() {
                                             <FaStore size={12} />
                                         </div>
                                         <div className="text-left">
-                                            <div className="font-bold text-[10px] sm:text-xs">Collection - Kerbside Service</div>
-                                            <p className="text-[9px] sm:text-[10px] text-zinc-400">Drop off to your car</p>
+                                            <div className="font-bold text-xs sm:text-sm">Collection - Kerbside Service</div>
+                                            <p className="text-[10px] sm:text-xs text-zinc-400">Drop off to your car</p>
                                         </div>
                                         {orderType === 'collection' && (
                                             <div className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2">
@@ -575,7 +575,7 @@ export default function CheckoutPage() {
 
                             {
                                 orderType === 'collection' && (
-                                    <p className="text-[10px] sm:text-xs text-zinc-300 mt-3 sm:mt-5">
+                                    <p className="text-xs sm:text-sm text-zinc-300 mt-3 sm:mt-5">
                                         Based in Chadderton, Oldham (OL9), your order will be ready at your scheduled collection time. It is your responsibility to arrive on time, as food is made fresh. Exact collection details will be provided in your order confirmation email.
                                         <br />
                                         <br />
@@ -599,7 +599,7 @@ export default function CheckoutPage() {
                                     </div>
                                     <div>
                                         <h2 className="text-sm sm:text-lg font-bold">Delivery Area Check</h2>
-                                        <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5">Enter your postcode to check if we deliver to your area</p>
+                                        <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">Enter your postcode to check if we deliver to your area</p>
                                     </div>
                                 </div>
 
@@ -648,7 +648,7 @@ export default function CheckoutPage() {
                                     {showDropdown && searchResults.length > 0 && (
                                         <div className="absolute z-100 left-0 right-0 mt-1.5 bg-zinc-900 border border-white/10 rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[240px] sm:max-h-[280px] overflow-y-auto custom-scrollbar">
                                             <div className="p-1.5 sm:p-2">
-                                                <p className="text-[9px] sm:text-[10px] text-zinc-500 uppercase tracking-widest font-bold px-2 sm:px-3 py-1.5 sm:py-2">Select your postcode</p>
+                                                <p className="text-xs sm:text-xs text-zinc-500 uppercase tracking-widest font-bold px-2 sm:px-3 py-1.5 sm:py-2">Select your postcode</p>
                                                 {searchResults.map((result, idx) => (
                                                     <button
                                                         key={idx}
@@ -660,8 +660,8 @@ export default function CheckoutPage() {
                                                             <FaMapMarkerAlt className="text-brand" size={10} />
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-xs sm:text-sm font-bold text-white tracking-wide">{result.postcode}</p>
-                                                            <p className="text-[10px] sm:text-[11px] text-zinc-400 truncate">{result.district}{result.ward ? `, ${result.ward}` : ''}</p>
+                                                            <p className="text-sm sm:text-base font-bold text-white tracking-wide">{result.postcode}</p>
+                                                            <p className="text-xs sm:text-sm text-zinc-400 truncate">{result.district}{result.ward ? `, ${result.ward}` : ''}</p>
                                                         </div>
                                                         <FaArrowRight className="text-zinc-600 group-hover:text-brand transition-colors shrink-0" size={8} />
                                                     </button>
@@ -690,11 +690,11 @@ export default function CheckoutPage() {
                                                 <h3 className="text-green-400 font-bold text-xs sm:text-sm mb-0.5 sm:mb-1">Great news! We deliver to your area</h3>
                                                 <div className="space-y-0.5">
                                                     {customerAddress && (
-                                                        <p className="text-[10px] sm:text-xs text-zinc-400">📍 {customerAddress.postcode}{customerAddress.district ? `, ${customerAddress.district}` : ''}</p>
+                                                        <p className="text-xs sm:text-sm text-zinc-400">📍 {customerAddress.postcode}{customerAddress.district ? `, ${customerAddress.district}` : ''}</p>
                                                     )}
-                                                    {/* <p className="text-[10px] sm:text-xs text-zinc-400">📏 Distance: <span className="text-white font-semibold">{deliveryDistance} miles</span> from our store</p> */}
-                                                    <p className="text-[10px] sm:text-xs text-zinc-400">🚚 Delivery Fee: <span className="text-white font-semibold">{symbol}{deliveryZone.delivery_fee.toFixed(2)}</span></p>
-                                                    <p className="text-[10px] sm:text-xs text-zinc-400">🛒 Min. Order: <span className="text-white font-semibold">{symbol}{deliveryZone.minimum_order_amount.toFixed(2)}</span></p>
+                                                    {/* <p className="text-xs sm:text-sm text-zinc-400">📏 Distance: <span className="text-white font-semibold">{deliveryDistance} miles</span> from our store</p> */}
+                                                    <p className="text-xs sm:text-sm text-zinc-400">🚚 Delivery Fee: <span className="text-white font-semibold">{symbol}{deliveryZone.delivery_fee.toFixed(2)}</span></p>
+                                                    <p className="text-xs sm:text-sm text-zinc-400">🛒 Min. Order: <span className="text-white font-semibold">{symbol}{deliveryZone.minimum_order_amount.toFixed(2)}</span></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -709,13 +709,13 @@ export default function CheckoutPage() {
                                                 <FaTimesCircle className="text-red-400" size={14} />
                                             </div>
                                             <div className="flex-1">
-                                                <h3 className="text-red-400 font-bold text-xs sm:text-sm mb-0.5 sm:mb-1">Sorry, we can't deliver to this area</h3>
+                                                <h3 className="text-red-400 font-bold text-sm sm:text-base mb-0.5 sm:mb-1">Sorry, we can't deliver to this area</h3>
                                                 <div className="space-y-0.5">
                                                     {customerAddress && (
-                                                        <p className="text-[10px] sm:text-xs text-zinc-400">📍 {customerAddress.postcode}{customerAddress.district ? `, ${customerAddress.district}` : ''}</p>
+                                                        <p className="text-xs sm:text-sm text-zinc-400">📍 {customerAddress.postcode}{customerAddress.district ? `, ${customerAddress.district}` : ''}</p>
                                                     )}
-                                                    <p className="text-[10px] sm:text-xs text-zinc-400">📏 Distance: <span className="text-white font-semibold">{deliveryDistance} miles</span> — beyond our delivery range</p>
-                                                    <p className="text-[10px] sm:text-xs text-zinc-300 mt-1.5">You can still place a <button type="button" onClick={() => setOrderType('collection')} className="text-brand font-bold underline underline-offset-2 hover:text-green-400 transition-colors cursor-pointer">Collection Order</button> and pick it up from our store.</p>
+                                                    <p className="text-xs sm:text-sm text-zinc-400">📏 Distance: <span className="text-white font-semibold">{deliveryDistance} miles</span> — beyond our delivery range</p>
+                                                    <p className="text-xs sm:text-sm text-zinc-300 mt-1.5">You can still place a <button type="button" onClick={() => setOrderType('collection')} className="text-brand font-bold underline underline-offset-2 hover:text-green-400 transition-colors cursor-pointer">Collection Order</button> and pick it up from our store.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -738,9 +738,9 @@ export default function CheckoutPage() {
                                                 <div key={zone.id} className="bg-white/[0.03] border border-white/5 rounded-lg sm:rounded-xl p-2.5 sm:p-3">
                                                     <div className="flex items-center gap-1.5 mb-1 sm:mb-1.5">
                                                         <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full ${colors[idx] || colors[0]}`}></div>
-                                                        <span className="text-[10px] sm:text-xs font-bold text-zinc-300">{zone.name}</span>
+                                                        <span className="text-xs sm:text-sm font-bold text-zinc-300">{zone.name}</span>
                                                     </div>
-                                                    <p className="text-[9px] sm:text-[11px] text-zinc-400">
+                                                    <p className="text-xs sm:text-sm text-zinc-400">
                                                         {zone.min_distance > 0 ? `${zone.min_distance} – ${zone.max_distance}` : `Within ${zone.max_distance}`} miles — {symbol}{zone.delivery_fee.toFixed(2)}
                                                     </p>
                                                     {/* <p className="text-[8px] sm:text-[10px] text-zinc-500 mt-0.5">Min. {symbol}{zone.minimum_order_amount.toFixed(2)}</p> */}
@@ -854,22 +854,22 @@ export default function CheckoutPage() {
                                                                 <FaCalendarAlt size={14} />
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <div className="font-bold text-[11px] sm:text-xs truncate">
+                                                                <div className="font-bold text-sm sm:text-base truncate">
                                                                     {dateItem.day_name}
                                                                 </div>
-                                                                <p className="text-[9px] sm:text-[10px] text-zinc-400 truncate">
+                                                                <p className="text-xs sm:text-sm text-zinc-400 truncate">
                                                                     {dateItem.short_date}
                                                                 </p>
                                                             </div>
                                                             <div className="shrink-0">
                                                                 {isOpen && (
-                                                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-green-400 bg-green-500/10 px-1.5 py-0.5 rounded-full">Open</span>
+                                                                    <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-green-400 bg-green-500/10 px-2 py-1 rounded-full">Open</span>
                                                                 )}
                                                                 {isSoldOut && (
-                                                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full">Sold Out</span>
+                                                                    <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2 py-1 rounded-full">Sold Out</span>
                                                                 )}
                                                                 {isClosed && (
-                                                                    <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded-full">Closed</span>
+                                                                    <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-red-400 bg-red-500/10 px-2 py-1 rounded-full">Closed</span>
                                                                 )}
                                                             </div>
                                                             {isSelected && (
@@ -894,8 +894,8 @@ export default function CheckoutPage() {
                                     {selectedOrderDate && (
                                         <>
                                             <div className="flex justify-between items-end mt-4">
-                                                <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400">Time Slot Allocation</label>
-                                                <div className={`text-[10px] sm:text-xs font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${allocatedTotal === totalCartQty ? 'bg-brand/20 text-white' : 'bg-red-500/10 text-red-400'}`}>
+                                                <label className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400">Time Slot Allocation</label>
+                                                <div className={`text-xs sm:text-sm font-bold px-2 sm:px-3 py-0.5 sm:py-1 rounded-full ${allocatedTotal === totalCartQty ? 'bg-brand/20 text-white' : 'bg-red-500/10 text-red-400'}`}>
                                                     {allocatedTotal} / {totalCartQty} Allocated
                                                 </div>
                                             </div>
@@ -912,15 +912,15 @@ export default function CheckoutPage() {
                                                             const allocated = allocations[slot.id] || 0;
                                                             const remaining = slot.max_capacity - allocated;
                                                             return (
-                                                                <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-1.5 px-2 rounded-lg border transition-all ${slot.disabled ? 'bg-red-500/[0.04] border-red-500/15' : allocated > 0 ? 'bg-brand/5 border-brand/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
+                                                                <div key={slot.id} className={`flex items-center gap-3 sm:gap-4 ps-3 py-2 px-2 rounded-lg border transition-all ${slot.disabled ? 'bg-red-500/[0.04] border-red-500/15' : allocated > 0 ? 'bg-brand/5 border-brand/20' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}`}>
                                                                     <div className="flex-1 min-w-0">
-                                                                        <div className={`text-xs sm:text-sm font-bold ${slot.disabled ? 'text-zinc-400' : 'text-white'}`}>{slot.start_time}</div>
-                                                                        <div className={`text-[9px] sm:text-[10px] uppercase tracking-widest mt-0.5 ${slot.disabled ? 'text-red-400 font-bold' : 'text-zinc-400'}`}>
+                                                                        <div className={`text-sm sm:text-base font-bold ${slot.disabled ? 'text-zinc-400' : 'text-white'}`}>{slot.start_time}</div>
+                                                                        <div className={`text-xs sm:text-xs uppercase tracking-widest mt-0.5 ${slot.disabled ? 'text-red-400 font-bold' : 'text-zinc-400'}`}>
                                                                             {slot.disabled ? 'Sold Out' : `${remaining} ${remaining === 1 ? 'steak' : 'steaks'} left`}
                                                                         </div>
                                                                     </div>
                                                                     {slot.disabled ? (
-                                                                        <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-red-400 bg-red-500/10 px-2.5 py-1 rounded-lg border border-red-500/20 shrink-0">
+                                                                        <span className="text-xs sm:text-xs font-bold uppercase tracking-widest text-red-400 bg-red-500/10 px-2.5 py-1 rounded-lg border border-red-500/20 shrink-0">
                                                                             Sold Out
                                                                         </span>
                                                                     ) : (
@@ -929,20 +929,20 @@ export default function CheckoutPage() {
                                                                                 type="button"
                                                                                 onClick={() => handleAllocationChange(slot.id, allocated - 1, slot.max_capacity)}
                                                                                 disabled={allocated <= 0}
-                                                                                className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                                                className="p-2 sm:p-2.5 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
                                                                             >
-                                                                                <FaMinus size={8} />
+                                                                                <FaMinus size={12} />
                                                                             </button>
-                                                                            <div className="w-7 sm:w-8 text-center text-xs sm:text-sm font-bold text-white tabular-nums">
+                                                                            <div className="w-9 sm:w-10 text-center text-sm sm:text-base font-bold text-white tabular-nums">
                                                                                 {allocated}
                                                                             </div>
                                                                             <button
                                                                                 type="button"
                                                                                 onClick={() => handleAllocationChange(slot.id, allocated + 1, slot.max_capacity)}
                                                                                 disabled={allocated >= slot.max_capacity || allocatedTotal >= totalCartQty}
-                                                                                className="p-1.5 sm:p-2 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+                                                                                className="p-2 sm:p-2.5 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
                                                                             >
-                                                                                <FaPlus size={8} />
+                                                                                <FaPlus size={12} />
                                                                             </button>
                                                                         </div>
                                                                     )}
@@ -958,12 +958,12 @@ export default function CheckoutPage() {
                                                     <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#141414] to-transparent pointer-events-none rounded-b-xl" />
                                                 )}
                                             </div>
-                                            {allocatedTotal !== totalCartQty && <p className="text-[12px] text-red-400 font-medium">* Total items ({totalCartQty}) must be fully allocated.</p>}
+                                            {allocatedTotal !== totalCartQty && <p className="text-sm text-red-400 font-medium">* Total items ({totalCartQty}) must be fully allocated.</p>}
                                         </>
                                     )}
 
                                     <div className="bg-blue-400/5 border border-blue-500/10 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3">
-                                        <p className="text-[9px] sm:text-[11px] text-white/80 leading-relaxed">
+                                        <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
                                             <span className="">💬 Need more than 5 steaks in one slot?</span>{' '}
                                             DM us on{' '}
                                             <a href="https://www.instagram.com/chimnchurri" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 font-bold underline underline-offset-2">Instagram</a>{' '}or{' '}
@@ -974,17 +974,17 @@ export default function CheckoutPage() {
                                 </div>
 
                                 <div className="md:col-span-2 space-y-1">
-                                    <label className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-zinc-400">Order Instructions (Optional)</label>
+                                    <label className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-400">Order Instructions (Optional)</label>
                                     <textarea
                                         {...register("order_instruction")}
                                         placeholder={orderType === 'collection' ? 'Any special requests for your order...' : 'Ring the doorbell, leave at gate, etc...'}
-                                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl text-white placeholder-zinc-400 text-xs sm:text-sm
+                                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3.5 bg-white/[0.05] border border-white/10 rounded-lg sm:rounded-xl text-white placeholder-zinc-400 text-sm sm:text-base
                                             focus:outline-none focus:border-brand/60 focus:ring-2 focus:ring-brand/20 focus:bg-white/[0.08]
                                             transition-all duration-300 hover:border-white/20 min-h-[80px] sm:min-h-[100px] resize-none"
                                     />
                                     <div className="bg-yellow-50/10 border border-yellow-500/20 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-3 sm:mb-4">
-                                        <p className="text-[10px] sm:text-xs text-yellow-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">⚠️ Allergens Notice</p>
-                                        <p className="text-[9px] sm:text-[11px] text-yellow-300/80 leading-relaxed">Our food is prepared in a shared home kitchen and may contain any allergens, including nuts, gluten, dairy, eggs, soy, and shellfish. We cannot cater to specific allergen requests. Please order with caution and ask us if you are unsure.</p>
+                                        <p className="text-xs sm:text-sm text-yellow-400 font-bold uppercase tracking-wider mb-0.5 sm:mb-1">⚠️ Allergens Notice</p>
+                                        <p className="text-xs sm:text-sm text-yellow-300/80 leading-relaxed">Our food is prepared in a shared home kitchen and may contain any allergens, including nuts, gluten, dairy, eggs, soy, and shellfish. We cannot cater to specific allergen requests. Please order with caution and ask us if you are unsure.</p>
                                     </div>
 
 
