@@ -12,7 +12,7 @@ import { useCurrency } from '@/app/providers/SettingsProvider';
 
 const ThankYouContent = () => {
     const searchParams = useSearchParams();
-    const orderId = searchParams.get('id');
+    const orderId = atob(searchParams.get('id'));
 
     const { code, symbol, format } = useCurrency();
 
