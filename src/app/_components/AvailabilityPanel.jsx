@@ -17,8 +17,13 @@ const DateSlots = ({ dateId }) => {
         queryKey: ['timeSlots', dateId],
         queryFn: () => timeSlots(dateId),
         enabled: !!dateId,
-        refetchInterval: 30_000, // real-time: refresh every 30 s
+        refetchInterval: (query) => {
+            const s = query.state.data?.data;
+            return !s || s.length === 0 ? 5_000 : 30_000;
+        },
         staleTime: 0,
+        retry: 3,
+        retryDelay: 2_000,
     });
 
     const slots = data?.data;
