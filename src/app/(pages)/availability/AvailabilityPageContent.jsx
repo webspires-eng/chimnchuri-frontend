@@ -23,7 +23,7 @@ const DateSlots = ({ dateId }) => {
         queryFn: () => timeSlots(dateId),
         enabled: !!dateId,
         refetchInterval: 30_000,
-        staleTime: 0,
+        staleTime: 25_000,
     });
 
     if (isLoading) {
@@ -135,7 +135,7 @@ const AvailabilityPageContent = () => {
         queryKey: ['orderDates'],
         queryFn: fetchOrderDates,
         refetchInterval: 30_000,
-        staleTime: 0,
+        staleTime: 25_000,
     });
 
     const dates = data?.data ?? [];
