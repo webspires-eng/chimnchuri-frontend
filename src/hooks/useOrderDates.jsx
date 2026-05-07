@@ -6,6 +6,8 @@ const useOrderDates = () => {
     const { data, isLoading, error } = useQuery({
         queryKey: ["orderDates"],
         queryFn: fetchOrderDates,
+        staleTime: 30_000,
+        refetchInterval: 30_000,
     })
 
     return { data, isLoading, error }
