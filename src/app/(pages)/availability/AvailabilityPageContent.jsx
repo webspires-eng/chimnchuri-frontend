@@ -18,20 +18,18 @@ import { MdRestaurant } from 'react-icons/md';
 
 // ── Individual date's time slots ─────────────────────────────────────────────
 const DateSlots = ({ dateId }) => {
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isFetching } = useQuery({
         queryKey: ['timeSlots', dateId],
         queryFn: () => timeSlots(dateId),
         enabled: !!dateId,
         refetchInterval: 30_000,
-        staleTime: 25_000,
+        staleTime: 0,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
-        refetchOnMount: false,
-        keepPreviousData: true,
         retry: 2,
     });
 
-    if (isLoading) {
+    if (isLoading || (isFetching && !data)) {
         return (
             <div className="flex items-center gap-2.5 py-4 px-2 text-zinc-500 text-xs animate-pulse">
                 <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin shrink-0" />
