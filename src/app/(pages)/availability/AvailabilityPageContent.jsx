@@ -29,7 +29,9 @@ const DateSlots = ({ dateId }) => {
         retry: 2,
     });
 
-    if (isLoading || (isFetching && !data)) {
+    const slots = data?.data;
+
+    if (isLoading || (isFetching && (!slots || slots.length === 0))) {
         return (
             <div className="flex items-center gap-2.5 py-4 px-2 text-zinc-500 text-xs animate-pulse">
                 <div className="w-4 h-4 border-2 border-brand border-t-transparent rounded-full animate-spin shrink-0" />
@@ -38,7 +40,6 @@ const DateSlots = ({ dateId }) => {
         );
     }
 
-    const slots = data?.data;
     if (!slots || slots.length === 0) {
         return <p className="text-xs text-zinc-500 italic py-3">No time slots available for this date.</p>;
     }

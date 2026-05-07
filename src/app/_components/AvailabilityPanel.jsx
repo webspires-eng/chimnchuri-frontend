@@ -13,7 +13,7 @@ import {
 
 // ── Slot row (loads its own time-slot data when the parent date is expanded) ──
 const DateSlots = ({ dateId }) => {
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, isFetching } = useQuery({
         queryKey: ['timeSlots', dateId],
         queryFn: () => timeSlots(dateId),
         enabled: !!dateId,
@@ -21,7 +21,9 @@ const DateSlots = ({ dateId }) => {
         staleTime: 0,
     });
 
-    if (isLoading) {
+    const slots = data?.data;
+
+    if (isLoading || (isFetching && (!slots || slots.length === 0))) {
         return (
             <div className="flex items-center gap-2 py-3 px-1 text-zinc-500 text-xs animate-pulse">
                 <div className="w-3 h-3 border-2 border-brand border-t-transparent rounded-full animate-spin" />
@@ -30,7 +32,6 @@ const DateSlots = ({ dateId }) => {
         );
     }
 
-    const slots = data?.data;
     if (!slots || slots.length === 0) {
         return <p className="text-xs text-zinc-500 py-2 px-1 italic">No time slots available.</p>;
     }
