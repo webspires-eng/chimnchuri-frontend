@@ -27,6 +27,8 @@ const DateSlots = ({ dateId }) => {
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         refetchOnMount: false,
+        keepPreviousData: true,
+        retry: 2,
     });
 
     if (isLoading) {
@@ -142,6 +144,8 @@ const AvailabilityPageContent = () => {
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         refetchOnMount: false,
+        keepPreviousData: true,
+        retry: 2,
     });
 
     const dates = data?.data ?? [];
