@@ -24,6 +24,9 @@ const DateSlots = ({ dateId }) => {
         enabled: !!dateId,
         refetchInterval: 30_000,
         staleTime: 25_000,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchOnMount: false,
     });
 
     if (isLoading) {
@@ -136,6 +139,9 @@ const AvailabilityPageContent = () => {
         queryFn: fetchOrderDates,
         refetchInterval: 30_000,
         staleTime: 25_000,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+        refetchOnMount: false,
     });
 
     const dates = data?.data ?? [];
