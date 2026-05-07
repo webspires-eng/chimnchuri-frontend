@@ -97,7 +97,7 @@ const AvailabilityPanel = () => {
         queryKey: ['orderDates'],
         queryFn: fetchOrderDates,
         refetchInterval: 30_000, // poll every 30 s for real-time updates
-        staleTime: 0,
+        staleTime: 30_000,
     });
 
     const dates = data?.data ?? [];

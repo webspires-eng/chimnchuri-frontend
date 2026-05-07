@@ -3,7 +3,7 @@ import React from 'react'
 import CategoryClient from './CategoryClient';
 import { categryKeys } from '@/features/categories/keys';
 import { prefetchCategory } from '@/features/categories/prefetch';
-import { fetchCategory } from '@/lib/api';
+import { fetchCategory, fetchOrderDates } from '@/lib/api';
 
 
 export async function generateMetadata({ params }) {
@@ -32,6 +32,7 @@ const Category = async ({ params }) => {
     const { slug } = await params;
 
     await prefetchCategory(queryClient, slug);
+    await queryClient.prefetchQuery({ queryKey: ['orderDates'], queryFn: fetchOrderDates });
 
     return (
         <>
