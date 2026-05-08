@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Luckiest_Guy } from 'next/font/google'
 import Header from "./_components/Header";
 import CartReminder from "./_components/CartReminder";
+import Maintenance from "./_components/Maintenance";
 
 const luckiestGuy = Luckiest_Guy({
   subsets: ['latin'],
@@ -40,6 +41,7 @@ export const viewport = {
 };
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://admin.chimnchurri.com";
+const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true';
 
 async function fetchSettings() {
   try {
@@ -56,6 +58,16 @@ async function fetchSettings() {
 }
 
 export default async function RootLayout({ children }) {
+  if (isMaintenanceMode) {
+    return (
+      <html lang="en">
+        <body cz-shortcut-listen="true" className="antialiased">
+          <Maintenance />
+        </body>
+      </html>
+    );
+  }
+
   const data = await fetchSettings();
   return (
     <html lang="en">
