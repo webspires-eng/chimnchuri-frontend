@@ -8,6 +8,7 @@ export async function apiClient(url, options = {}, _retried = false) {
         : `/api/v1/frontend`;
     const response = await fetch(`${baseUrl}${url}`, {
         ...options,
+        cache: "no-store",
         credentials: "include",
         headers: {
             "Accept": "application/json",
