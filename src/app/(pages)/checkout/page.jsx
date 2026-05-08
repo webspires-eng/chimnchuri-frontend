@@ -375,7 +375,8 @@ export default function CheckoutPage() {
                 if (response?.success) {
                     dispatch(clearCart());
                     toast.success("Order placed successfully");
-                    router.push(`/thank-you?id=${response.orderId}`);
+                    let hashId = btoa(response?.orderId);
+                    router.push(`/thank-you?id=${hashId}`);
                     return;
                 }
             }
@@ -386,7 +387,8 @@ export default function CheckoutPage() {
                 if (response && response.orderId) {
                     dispatch(clearCart());
                     toast.success("Order placed successfully");
-                    router.push(`/thank-you?id=${response.orderId}`);
+                    let hashId = btoa(response?.orderId);
+                    router.push(`/thank-you?id=${hashId}`);
                     return;
                 }
                 if (response === false) {
